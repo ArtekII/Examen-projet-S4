@@ -18,7 +18,7 @@ class ConfigurationTransactionController extends BaseController
         $typeModel = new TypeOperationModel();
         return view('Operateur/form', [
             'title' => 'Configuration des frais',
-            'configurations' => $model->orderBy('id', 'ASC')->findAll(),
+            'configurations' => $model->getAllOrderedById(),
             'types' => $typeModel->findAll(),
         ]);
     }
@@ -33,7 +33,7 @@ class ConfigurationTransactionController extends BaseController
 
             return view('Operateur/form', [
                 'title' => 'Configuration des frais',
-                'configurations' => $model->orderBy('id', 'ASC')->findAll(),
+                'configurations' => $model->getAllOrderedById(),
                 'types' => $typeModel->findAll(),
                 'validation' => $model->errors(),
             ]);
@@ -48,7 +48,7 @@ class ConfigurationTransactionController extends BaseController
 
         return view('Operateur/soldes', [
             'title' => 'Soldes des clients',
-            'soldes' => $model->orderBy('nom_client', 'ASC')->findAll(),
+            'soldes' => $model->getAllOrderedByName(),
         ]);
     }
 
@@ -59,12 +59,8 @@ class ConfigurationTransactionController extends BaseController
         $typeModel = new TypeOperationModel();
 
         $idType = $this->request->getGet('id_type_operation');
-
-        if (!empty($idType)) {
-            $gains = $gainsModel->where('id_type_operation', $idType)->findAll();
-        } else {
-            $gains = $gainsModel->findAll();
-        }
+        $idTypeFiltre = is_numeric($idType) ? (int) $idType : null;
+        $gains = $gainsModel->getByType($idTypeFiltre);
 
         $totalFiltre = array_sum(array_column($gains, 'montant_frais'));
 

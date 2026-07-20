@@ -19,10 +19,12 @@
 # V2
 
 ## Coter operateur
-- Configuration des préfixes valable pour les autres opérateurs [4248]
-- Configurations comission [4248]
-- Gain selon les operateurs
+- Configuration des préfixes valable pour les autres opérateurs 
+- Configurations comission [4183]
+- Gain selon les operateurs [4183]
 - Situation des montants à envoyer à chaque opérateu
 
 
 ## Coter client
+- Option inclure frais de retrait [4248]
+- Envoie a plusieurs numero [4248]

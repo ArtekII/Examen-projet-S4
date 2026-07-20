@@ -10,4 +10,9 @@ class SoldeClientModel extends Model
     protected $primaryKey = 'id';
     protected $returnType = 'array';
     protected $useTimestamps = false;
+
+    public function getAllOrderedByName(): array
+    {
+        return $this->orderBy('nom_client', 'ASC')->findAll();
+    }
 }

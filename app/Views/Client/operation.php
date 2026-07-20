@@ -56,6 +56,19 @@
             </label>
         </div>
 
+        <div class="form-group" id="multiple-transfer-option" hidden>
+            <label>
+                <input
+                    type="checkbox"
+                    name="envoi_multiple"
+                    id="envoi_multiple"
+                    value="1"
+                    <?= old('envoi_multiple') === '1' ? 'checked' : '' ?>
+                >
+                Envoyer vers plusieurs numéros
+            </label>
+        </div>
+
         <div class="form-group" id="beneficiary-group" hidden>
             <label for="numero_beneficiaire">Numéro du bénéficiaire</label>
             <input
@@ -67,6 +80,20 @@
                 placeholder="Pour un transfert uniquement"
             >
             <div><?= esc($validation['numero_beneficiaire'] ?? '') ?></div>
+        </div>
+
+        <div class="form-group" id="multiple-beneficiaries-group" hidden>
+            <label for="numeros_beneficiaires">
+                Numéros des bénéficiaires
+            </label>
+
+            <textarea
+                name="numeros_beneficiaires"
+                id="numeros_beneficiaires"
+                class="form-control"
+                placeholder="Un numéro par ligne"
+            ><?= esc(old('numeros_beneficiaires')) ?></textarea>
+            <div><?= esc($validation['numeros_beneficiaires'] ?? '') ?></div>
         </div>
 
         <button type="submit" class="btn btn-primary">Valider l’opération</button>

@@ -93,4 +93,9 @@ class ConfigurationsTransaction extends Model
 
         return (float) ($configuration['montant_frais'] ?? 0);
     }
+
+    public function getAllOrderedById(): array
+    {
+        return $this->orderBy('id', 'ASC')->findAll();
+    }
 }

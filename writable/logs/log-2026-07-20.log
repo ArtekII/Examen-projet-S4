@@ -882,3 +882,33 @@ in APPPATH/Controllers/ClientsController.php on line 44.
  6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
  7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
  8 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+CRITICAL - 2026-07-20 16:04:50 --> ErrorException: Undefined array key "nom_client"
+[Method: GET, Route: operateur/gains]
+in APPPATH/Views/Operateur/gains.php on line 40.
+ 1 APPPATH/Views/Operateur/gains.php(40): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/itu/Bureau/S4/SI/Examen-projet-S4/app/Views/Operateur/gains.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/ConfigurationTransactionController.php(71): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ConfigurationTransactionController->gains()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+CRITICAL - 2026-07-20 16:04:55 --> ErrorException: Undefined array key "nom_client"
+[Method: GET, Route: operateur/gains]
+in APPPATH/Views/Operateur/gains.php on line 40.
+ 1 APPPATH/Views/Operateur/gains.php(40): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/itu/Bureau/S4/SI/Examen-projet-S4/app/Views/Operateur/gains.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/ConfigurationTransactionController.php(71): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ConfigurationTransactionController->gains()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')

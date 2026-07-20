@@ -7,7 +7,6 @@ use App\Models\Clients;
 use App\Models\OperationMouvement;
 use App\Models\TypeOperations;
 use App\Models\Operateurs;
-use App\Models\ConfigurationsTransaction;
 
 class ClientsController extends BaseController
 {
@@ -19,9 +18,12 @@ class ClientsController extends BaseController
         );
     }
 
-    public function login(){
-        $numero = $this->normalizeNumero($this->request->getPost('numero'));
+    public function login()
+    {
         $clientModel = new Clients();
+        $numero = $clientModel->normaliserNumero(
+            $this->request->getPost('numero')
+        );
         $client = $clientModel->getClientByNumero($numero);
 
         $config = config('MobileMoney');
@@ -96,123 +98,121 @@ class ClientsController extends BaseController
             return redirect()->to(site_url('client/connexion'));
         }
 
-        $config = config('MobileMoney');
-        $operatorIdSimule = $config->operatorId;
+        $clientId = (int) session()->get('client_id');
+        $operateurId = (int) config('MobileMoney')->operatorId;
+        $typeOperationId = (string) $this->request->getPost('id_type_operation');
+        $montantSaisi = $this->request->getPost('montant');
+        $envoiMultiple = $this->request->getPost('envoi_multiple') === '1';
         $inclureFraisRetrait = $this->request
             ->getPost('inclure_frais_retrait') === '1';
 
-        $typeOperationId = (string) $this->request->getPost('id_type_operation');
+        $typeOperationModel = new TypeOperations();
+        $typeOperation = null;
 
-        if (! ctype_digit($typeOperationId)) {
-            return redirect()->back()->withInput()->with('validation', [
-                'id_type_operation' => 'Le type d’opération sélectionné est invalide.',
-            ]);
+        if (ctype_digit($typeOperationId)) {
+            $typeOperation = $typeOperationModel->find((int) $typeOperationId);
         }
-
-        $typeOperationsModel = new TypeOperations();
-        $typeOperation = $typeOperationsModel->find((int) $typeOperationId);
 
         if (! $typeOperation) {
-            return redirect()->back()->withInput()->with('validation', [
-                'id_type_operation' => 'Le type d’opération sélectionné est invalide.',
-            ]);
+            return $this->validationError(
+                'id_type_operation',
+                'Le type d’opération sélectionné est invalide.'
+            );
         }
 
-        $montantSaisi = $this->request->getPost('montant');
+        $operationModel = new OperationMouvement();
+        $montant = $operationModel->normaliserMontant($montantSaisi);
 
-        if (! is_numeric($montantSaisi) || (float) $montantSaisi <= 0) {
-            return redirect()->back()->withInput()->with('validation', [
-                'montant' => 'Le montant doit être un nombre supérieur à zéro.',
-            ]);
+        if ($montant === null) {
+            return $this->validationError(
+                'montant',
+                'Le montant doit être un nombre supérieur à zéro.'
+            );
         }
 
-        $montant = (float) $montantSaisi;
-        $configurationModel = new ConfigurationsTransaction();
-
-        $clientId = (int) session()->get('client_id');
-        $beneficiaireId = $clientId;
-        $montantOperation = $montant;
-        $fraisRetraitInclus = 0.0;
+        $beneficiaires = [[
+            'id' => $clientId,
+            'meme_operateur' => true,
+        ]];
 
         if ($typeOperation['libelle'] === 'Transfert') {
+            if ($envoiMultiple) {
+                $texteNumeros = (string) $this->request
+                    ->getPost('numeros_beneficiaires');
+                $numeros = preg_split('/[\r\n,;]+/', $texteNumeros) ?: [];
+            } else {
+                $numeros = [$this->request->getPost('numero_beneficiaire')];
+            }
+
             $clientModel = new Clients();
-            $numeroBeneficiaire = $this->normalizeNumero(
-                $this->request->getPost('numero_beneficiaire')
+            $resultat = $clientModel->trouverBeneficiaires(
+                $numeros,
+                $clientId,
+                $operateurId,
+                $envoiMultiple
             );
-            $beneficiaire = $clientModel->getClientByNumero($numeroBeneficiaire);
 
-            if (! $beneficiaire) {
-                return redirect()->back()->withInput()->with('validation', [
-                    'numero_beneficiaire' => 'Le numéro du bénéficiaire est introuvable.',
-                ]);
+            if (isset($resultat['error'])) {
+                return $this->validationError(
+                    $resultat['field'],
+                    $resultat['error']
+                );
             }
 
-            if ((int) $beneficiaire['id'] === $clientId) {
-                return redirect()->back()->withInput()->with('validation', [
-                    'numero_beneficiaire' => 'Vous ne pouvez pas effectuer un transfert vers votre propre compte.',
-                ]);
-            }
-
-            $beneficiaireId = (int) $beneficiaire['id'];
-
-            $operateurBeneficiaire = (new Operateurs())->getOperateurByNumero(
-                $numeroBeneficiaire
-            );
-            $estMemeOperateur = $operateurBeneficiaire
-                && (int) $operateurBeneficiaire['id'] === $operatorIdSimule;
-
-            if ($inclureFraisRetrait && $estMemeOperateur) {
-                $typeRetrait = $typeOperationsModel
-                    ->where('libelle', 'Retrait')
-                    ->first();
-
-                if ($typeRetrait) {
-                    $fraisRetraitInclus = $configurationModel->getFrais(
-                        (int) $typeRetrait['id'],
-                        $montant
-                    );
-                    $montantOperation += $fraisRetraitInclus;
-                }
-            }
+            $beneficiaires = $resultat['beneficiaires'];
         }
 
-        $operationMouvement = new OperationMouvement();
-        $fraisOperation = $configurationModel->getFrais(
-            (int) $typeOperation['id'],
-            $montantOperation
+        $montants = $operationModel->diviserMontant(
+            $montant,
+            count($beneficiaires)
         );
 
-        if (in_array($typeOperation['libelle'], ['Retrait', 'Transfert'], true)) {
-            $solde = $operationMouvement->getSoldeByClientId($clientId);
-            $totalADebiter = $montantOperation + $fraisOperation;
-
-            if ($totalADebiter > $solde) {
-                return redirect()->back()->withInput()->with('validation', [
-                    'montant' => 'Solde insuffisant : le montant avec frais est de '
-                        . number_format($totalADebiter, 2, ',', ' ') . ' Ar.',
-                ]);
-            }
+        if (empty($montants)) {
+            return $this->validationError(
+                'montant',
+                'Le montant est trop faible pour le nombre de bénéficiaires.'
+            );
         }
 
-        $data = [
-            'id_emetteur' => $clientId,
-            'id_beneficiaire' => $beneficiaireId,
-            'id_operateur' => (int) $operatorIdSimule,
-            'id_type_operation' => (int) $typeOperation['id'],
-            'montant' => $montantOperation,
-        ];
+        $plan = $operationModel->preparerPlan(
+            $typeOperation,
+            $beneficiaires,
+            $montants,
+            $clientId,
+            $operateurId,
+            $inclureFraisRetrait
+        );
 
-        if (! $operationMouvement->insert($data)) {
-            return redirect()->back()->withInput()
-                ->with('validation', $operationMouvement->errors());
+        $doitVerifierSolde = $typeOperation['libelle'] === 'Retrait'
+            || $typeOperation['libelle'] === 'Transfert';
+
+        if ($doitVerifierSolde
+            && ! $operationModel->soldeSuffisant(
+                $clientId,
+                $plan['total_a_debiter']
+            )) {
+            return $this->validationError(
+                'montant',
+                'Solde insuffisant : le total avec frais est de '
+                    . number_format($plan['total_a_debiter'], 2, ',', ' ') . ' Ar.'
+            );
         }
+
+        $erreur = $operationModel->enregistrerTout($plan['operations']);
+
+        if ($erreur !== null) {
+            return redirect()->back()->withInput()->with('error', $erreur);
+        }
+
+        $nombreOperations = count($plan['operations']);
+        $message = $nombreOperations > 1
+            ? "{$nombreOperations} transferts enregistrés."
+            : 'Opération enregistrée.';
 
         return redirect()->to(site_url('client/compte'))->with(
             'success',
-            'Opération enregistrée. Frais d’opération : '
-                . number_format($fraisOperation, 2, ',', ' ') . ' Ar. '
-                . 'Frais de retrait inclus : '
-                . number_format($fraisRetraitInclus, 2, ',', ' ') . ' Ar.'
+            $message . ' Frais totaux : '
+                . number_format($plan['total_frais'], 2, ',', ' ') . ' Ar.'
         );
     }
 
@@ -239,12 +239,10 @@ class ClientsController extends BaseController
             ->with('success', 'Vous êtes déconnecté.');
     }
 
-    private function normalizeNumero($numero): string
+    private function validationError(string $field, string $message)
     {
-        if (! is_string($numero)) {
-            return '';
-        }
-
-        return preg_replace('/\s+/u', '', trim($numero)) ?? '';
+        return redirect()->back()->withInput()->with('validation', [
+            $field => $message,
+        ]);
     }
 }

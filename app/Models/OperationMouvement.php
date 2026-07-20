@@ -112,4 +112,130 @@ class OperationMouvement extends Model
 
         return $rows;
     }
+
+    public function normaliserMontant($montant): ?float
+    {
+        if (! is_numeric($montant) || (float) $montant <= 0) {
+            return null;
+        }
+
+        return round((float) $montant, 2);
+    }
+
+    public function diviserMontant(float $montant, int $nombre): array
+    {
+        $totalCentimes = (int) round($montant * 100);
+
+        if ($nombre < 1 || $totalCentimes < $nombre) {
+            return [];
+        }
+
+        $part = intdiv($totalCentimes, $nombre);
+        $reste = $totalCentimes % $nombre;
+        $montants = [];
+
+        for ($index = 0; $index < $nombre; $index++) {
+            $centimes = $part;
+
+            if ($index < $reste) {
+                $centimes++;
+            }
+
+            $montants[] = $centimes / 100;
+        }
+
+        return $montants;
+    }
+
+    public function preparerPlan(
+        array $typeOperation,
+        array $beneficiaires,
+        array $montants,
+        int $clientId,
+        int $operateurId,
+        bool $inclureFraisRetrait
+    ): array {
+        $configurationModel = new ConfigurationsTransaction();
+        $estTransfert = $typeOperation['libelle'] === 'Transfert';
+        $typeRetrait = null;
+
+        if ($inclureFraisRetrait && $estTransfert) {
+            $typeRetrait = (new TypeOperations())->getByLibelle('Retrait');
+        }
+
+        $operations = [];
+        $totalADebiter = 0.0;
+        $totalFrais = 0.0;
+
+        foreach ($beneficiaires as $index => $beneficiaire) {
+            $fraisRetrait = 0.0;
+
+            if ($typeRetrait && $beneficiaire['meme_operateur']) {
+                $fraisRetrait = $configurationModel->getFrais(
+                    (int) $typeRetrait['id'],
+                    $montants[$index]
+                );
+            }
+
+            $montantOperation = $montants[$index] + $fraisRetrait;
+            $fraisOperation = $configurationModel->getFrais(
+                (int) $typeOperation['id'],
+                $montantOperation
+            );
+
+            $operations[] = [
+                'id_emetteur' => $clientId,
+                'id_beneficiaire' => $beneficiaire['id'],
+                'id_operateur' => $operateurId,
+                'id_type_operation' => (int) $typeOperation['id'],
+                'montant' => $montantOperation,
+            ];
+
+            if ($typeOperation['libelle'] === 'Retrait' || $estTransfert) {
+                $totalADebiter += $montantOperation + $fraisOperation;
+            }
+
+            $totalFrais += $fraisOperation + $fraisRetrait;
+        }
+
+        return [
+            'operations' => $operations,
+            'total_a_debiter' => $totalADebiter,
+            'total_frais' => $totalFrais,
+        ];
+    }
+
+    public function soldeSuffisant(int $clientId, float $montant): bool
+    {
+        return $this->getSoldeByClientId($clientId) >= $montant;
+    }
+
+    public function enregistrerTout(array $operations): ?string
+    {
+        $this->db->transBegin();
+
+        try {
+            foreach ($operations as $operation) {
+                if ($this->insert($operation) === false) {
+                    $this->db->transRollback();
+
+                    return implode(' ', $this->errors())
+                        ?: 'Impossible d’enregistrer l’opération.';
+                }
+            }
+
+            if (! $this->db->transCommit()) {
+                $this->db->transRollback();
+
+                return 'Impossible de terminer l’envoi.';
+            }
+        } catch (\Throwable $exception) {
+            $this->db->transRollback();
+            log_message('error', $exception->getMessage());
+
+            return 'Une erreur est survenue pendant l’envoi.';
+        }
+
+        return null;
+    }
 }
