@@ -871,3 +871,14 @@ in APPPATH/Controllers/Home.php on line 12.
  5 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
  6 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
  7 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+CRITICAL - 2026-07-20 15:30:43 --> ErrorException: Undefined variable $operateurIdSimule
+[Method: POST, Route: client/login]
+in APPPATH/Controllers/ClientsController.php on line 44.
+ 1 APPPATH/Controllers/ClientsController.php(44): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
