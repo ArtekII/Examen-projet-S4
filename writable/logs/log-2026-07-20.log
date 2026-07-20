@@ -1,0 +1,214 @@
+CRITICAL - 2026-07-20 06:44:32 --> Error: Call to undefined method CodeIgniter\View\View::extends()
+[Method: GET, Route: client/connexion]
+in APPPATH/Views/Client/connexion.php on line 1.
+ 1 SYSTEMPATH/View/View.php(240): include()
+ 2 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 4 APPPATH/Controllers/ClientsController.php(13): view()
+ 5 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ClientsController->index()
+ 6 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 7 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 8 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+10 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+11 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+ERROR - 2026-07-20 07:03:08 --> Error connecting to the database: Exception: Unable to open database: unable to open database file in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php:111
+Stack trace:
+#0 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(111): SQLite3->__construct()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(555): CodeIgniter\Database\SQLite3\Connection->connect()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/BaseModel.php(714): CodeIgniter\Model->doFirst()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Models/Clients.php(67): CodeIgniter\BaseModel->first()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Controllers/ClientsController.php(22): App\Models\Clients->getClientByNumero()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+#10 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#11 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#12 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#13 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#14 /home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#15 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/rewrite.php(44): require_once('...')
+#16 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: SQLite3 error: Unable to open database: unable to open database file in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php:118
+Stack trace:
+#0 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(555): CodeIgniter\Database\SQLite3\Connection->connect()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/BaseModel.php(714): CodeIgniter\Model->doFirst()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Models/Clients.php(67): CodeIgniter\BaseModel->first()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Controllers/ClientsController.php(22): App\Models\Clients->getClientByNumero()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#10 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#11 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#12 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#13 /home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#14 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/rewrite.php(44): require_once('...')
+#15 {main}
+CRITICAL - 2026-07-20 07:03:08 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [SQLite3]: SQLite3 error: Unable to open database: unable to open database file
+[Method: POST, Route: client/login]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+ 3 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 4 SYSTEMPATH/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH/BaseModel.php(714): CodeIgniter\Model->doFirst()
+ 6 APPPATH/Models/Clients.php(67): CodeIgniter\BaseModel->first()
+ 7 APPPATH/Controllers/ClientsController.php(22): App\Models\Clients->getClientByNumero()
+ 8 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+ 9 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+10 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+11 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+13 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+14 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+ERROR - 2026-07-20 07:03:15 --> Error connecting to the database: Exception: Unable to open database: unable to open database file in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php:111
+Stack trace:
+#0 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(111): SQLite3->__construct()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(555): CodeIgniter\Database\SQLite3\Connection->connect()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/BaseModel.php(714): CodeIgniter\Model->doFirst()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Models/Clients.php(67): CodeIgniter\BaseModel->first()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Controllers/ClientsController.php(22): App\Models\Clients->getClientByNumero()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+#10 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#11 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#12 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#13 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#14 /home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#15 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/rewrite.php(44): require_once('...')
+#16 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: SQLite3 error: Unable to open database: unable to open database file in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php:118
+Stack trace:
+#0 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(555): CodeIgniter\Database\SQLite3\Connection->connect()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/BaseModel.php(714): CodeIgniter\Model->doFirst()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Models/Clients.php(67): CodeIgniter\BaseModel->first()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Controllers/ClientsController.php(22): App\Models\Clients->getClientByNumero()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#10 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#11 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#12 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#13 /home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#14 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/rewrite.php(44): require_once('...')
+#15 {main}
+CRITICAL - 2026-07-20 07:03:15 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [SQLite3]: SQLite3 error: Unable to open database: unable to open database file
+[Method: POST, Route: client/login]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+ 3 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 4 SYSTEMPATH/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH/BaseModel.php(714): CodeIgniter\Model->doFirst()
+ 6 APPPATH/Models/Clients.php(67): CodeIgniter\BaseModel->first()
+ 7 APPPATH/Controllers/ClientsController.php(22): App\Models\Clients->getClientByNumero()
+ 8 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ClientsController->login()
+ 9 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+10 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+11 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+13 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+14 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+ERROR - 2026-07-20 07:04:06 --> Error connecting to the database: Exception: Unable to open database: unable to open database file in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php:111
+Stack trace:
+#0 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(111): SQLite3->__construct()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(555): CodeIgniter\Database\SQLite3\Connection->connect()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(1706): CodeIgniter\Database\BaseConnection->query()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Commands/Database/ShowTableInfo.php(121): CodeIgniter\Database\BaseConnection->listTables()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/Commands.php(74): CodeIgniter\Commands\Database\ShowTableInfo->run()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/Console.php(47): CodeIgniter\CLI\Commands->run()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(442): CodeIgniter\CLI\Console->run()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(166): CodeIgniter\Boot::runCommand()
+#10 /home/itu/Bureau/S4/SI/Examen-projet-S4/spark(87): CodeIgniter\Boot::bootSpark()
+#11 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: SQLite3 error: Unable to open database: unable to open database file in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php:118
+Stack trace:
+#0 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(555): CodeIgniter\Database\SQLite3\Connection->connect()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Database/BaseConnection.php(1706): CodeIgniter\Database\BaseConnection->query()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Commands/Database/ShowTableInfo.php(121): CodeIgniter\Database\BaseConnection->listTables()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/Commands.php(74): CodeIgniter\Commands\Database\ShowTableInfo->run()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/Console.php(47): CodeIgniter\CLI\Commands->run()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(442): CodeIgniter\CLI\Console->run()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(166): CodeIgniter\Boot::runCommand()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/spark(87): CodeIgniter\Boot::bootSpark()
+#10 {main}
+CRITICAL - 2026-07-20 07:04:06 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [SQLite3]: SQLite3 error: Unable to open database: unable to open database file
+[Method: CLI, Route: db:table/clients]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/SQLite3/Connection.php(74): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\SQLite3\Connection->initialize()
+ 3 SYSTEMPATH/Database/BaseConnection.php(1706): CodeIgniter\Database\BaseConnection->query()
+ 4 SYSTEMPATH/Commands/Database/ShowTableInfo.php(121): CodeIgniter\Database\BaseConnection->listTables()
+ 5 SYSTEMPATH/CLI/Commands.php(74): CodeIgniter\Commands\Database\ShowTableInfo->run()
+ 6 SYSTEMPATH/CLI/Console.php(47): CodeIgniter\CLI\Commands->run()
+ 7 SYSTEMPATH/Boot.php(442): CodeIgniter\CLI\Console->run()
+ 8 SYSTEMPATH/Boot.php(166): CodeIgniter\Boot::runCommand()
+ 9 ROOTPATH/spark(87): CodeIgniter\Boot::bootSpark()
+CRITICAL - 2026-07-20 07:04:21 --> ErrorException: fwrite(): Write of 47 bytes failed with errno=32 Broken pipe
+[Method: CLI, Route: routes]
+in SYSTEMPATH/CLI/InputOutput.php on line 78.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CLI/InputOutput.php(78): fwrite()
+ 3 SYSTEMPATH/CLI/CLI.php(1126): CodeIgniter\CLI\InputOutput->fwrite()
+ 4 SYSTEMPATH/CLI/CLI.php(465): CodeIgniter\CLI\CLI::fwrite()
+ 5 SYSTEMPATH/Commands/Utilities/Routes.php(211): CodeIgniter\CLI\CLI::write()
+ 6 SYSTEMPATH/Commands/Utilities/Routes.php(196): CodeIgniter\Commands\Utilities\Routes->showRequiredFilters()
+ 7 SYSTEMPATH/CLI/Commands.php(74): CodeIgniter\Commands\Utilities\Routes->run()
+ 8 SYSTEMPATH/CLI/Console.php(47): CodeIgniter\CLI\Commands->run()
+ 9 SYSTEMPATH/Boot.php(442): CodeIgniter\CLI\Console->run()
+10 SYSTEMPATH/Boot.php(166): CodeIgniter\Boot::runCommand()
+11 ROOTPATH/spark(87): CodeIgniter\Boot::bootSpark()
+CRITICAL - 2026-07-20 07:04:21 --> ErrorException: Uncaught ErrorException: fwrite(): Write of 17 bytes failed with errno=32 Broken pipe in /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/InputOutput.php:78
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/InputOutput.php(78): fwrite()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/CLI.php(1126): CodeIgniter\CLI\InputOutput->fwrite()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/CLI.php(465): CodeIgniter\CLI\CLI::fwrite()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Views/errors/cli/error_exception.php(6): CodeIgniter\CLI\CLI::write()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/app/Views/errors/cli/production.php(5): include('...')
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Debug/BaseExceptionHandler.php(270): include('...')
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Debug/BaseExceptionHandler.php(273): CodeIgniter\Debug\BaseExceptionHandler->CodeIgniter\Debug\{closure}()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Debug/ExceptionHandler.php(126): CodeIgniter\Debug\BaseExceptionHandler->render()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Debug/Exceptions.php(151): CodeIgniter\Debug\ExceptionHandler->handle()
+#10 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#11 {main}
+  thrown
+【Previous Exception】
+ErrorException
+fwrite(): Write of 47 bytes failed with errno=32 Broken pipe
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/InputOutput.php(78): fwrite()
+#2 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/CLI.php(1126): CodeIgniter\CLI\InputOutput->fwrite()
+#3 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/CLI.php(465): CodeIgniter\CLI\CLI::fwrite()
+#4 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Commands/Utilities/Routes.php(211): CodeIgniter\CLI\CLI::write()
+#5 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Commands/Utilities/Routes.php(196): CodeIgniter\Commands\Utilities\Routes->showRequiredFilters()
+#6 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/Commands.php(74): CodeIgniter\Commands\Utilities\Routes->run()
+#7 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/CLI/Console.php(47): CodeIgniter\CLI\Commands->run()
+#8 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(442): CodeIgniter\CLI\Console->run()
+#9 /home/itu/Bureau/S4/SI/Examen-projet-S4/system/Boot.php(166): CodeIgniter\Boot::runCommand()
+#10 /home/itu/Bureau/S4/SI/Examen-projet-S4/spark(87): CodeIgniter\Boot::bootSpark()
+#11 {main}
+[Method: CLI, Route: routes]
+in SYSTEMPATH/CLI/InputOutput.php on line 78.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()

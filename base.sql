@@ -36,3 +36,15 @@ CREATE TABLE operation_mouvement(
     FOREIGN KEY (id_operateur) REFERENCES operateurs(id),
     FOREIGN KEY (id_type_operation) REFERENCES type_operations(id)
 );
+
+CREATE TABLE solde_clients(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_client INTEGER NOT NULL,
+    solde DECIMAL(10, 2) DEFAULT 0.00,
+    date_creation DATETIME NOT NULL,
+    FOREIGN KEY (id_client) REFERENCES clients(id)
+);
+
+---- INIT DATA v1 ----
+INSERT INTO clients (nom_client, numero) VALUES ('Client A', '0380000000');
+INSERT INTO clients (nom_client, numero) VALUES ('Client B', '0370000000');
