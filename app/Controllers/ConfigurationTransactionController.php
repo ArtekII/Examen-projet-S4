@@ -17,6 +17,7 @@ class ConfigurationTransactionController extends BaseController
         $model = new ConfigurationsTransaction();
         $typeModel = new TypeOperationModel();
         return view('Operateur/form', [
+            'title' => 'Configuration des frais',
             'configurations' => $model->orderBy('id', 'ASC')->findAll(),
             'types' => $typeModel->findAll(),
         ]);
@@ -28,9 +29,12 @@ class ConfigurationTransactionController extends BaseController
         $data = $this->request->getPost();
 
         if (!$model->insert($data)) {
+            $typeModel = new TypeOperationModel();
+
             return view('Operateur/form', [
+                'title' => 'Configuration des frais',
                 'configurations' => $model->orderBy('id', 'ASC')->findAll(),
-                'types' => $model->findAll(),
+                'types' => $typeModel->findAll(),
                 'validation' => $model->errors(),
             ]);
         }
@@ -43,6 +47,7 @@ class ConfigurationTransactionController extends BaseController
         $model = new SoldeClientModel();
 
         return view('Operateur/soldes', [
+            'title' => 'Soldes des clients',
             'soldes' => $model->orderBy('nom_client', 'ASC')->findAll(),
         ]);
     }
@@ -64,6 +69,7 @@ class ConfigurationTransactionController extends BaseController
         $totalFiltre = array_sum(array_column($gains, 'montant_frais'));
 
         return view('Operateur/gains', [
+            'title' => 'Gains sur les frais',
             'gains' => $gains,
             'total' => $totalModel->first(),
             'totalFiltre' => $totalFiltre,

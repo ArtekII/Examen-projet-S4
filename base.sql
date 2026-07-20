@@ -19,6 +19,13 @@ CREATE TABLE clients(
     numero VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE configurations_commission(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_operateur INTEGER NOT NULL,
+    pourcentage_commission DECIMAL(10, 2) DEFAULT 0.00,
+    FOREIGN KEY (id_operateur) REFERENCES operateurs(id)
+)
+
 CREATE TABLE configurations_transaction(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     borne_min DECIMAL(10, 2) DEFAULT 0.00,
