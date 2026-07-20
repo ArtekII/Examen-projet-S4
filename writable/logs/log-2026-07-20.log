@@ -1085,3 +1085,43 @@ in SYSTEMPATH/Database/SQLite3/Connection.php on line 164.
 14 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
 15 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
 16 SYSTEMPATH/rewrite.php(44): require_once('/home/itu/Bureau/S4/SI/Examen-projet-S4/public/index.php')
+CRITICAL - 2026-07-20 22:33:48 --> Error: Class "App\Controllers\ConfigurationsTransaction" not found
+[Method: GET, Route: operateur/commission]
+in APPPATH\Controllers\ConfigurationCommissionController.php on line 12.
+ 1 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\ConfigurationCommissionController->index()
+ 2 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ConfigurationCommissionController))
+ 3 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\rewrite.php(44): require_once('C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\public\\index.php')
+CRITICAL - 2026-07-20 22:34:33 --> ErrorException: Undefined array key "operateur"
+[Method: GET, Route: operateur/commission]
+in APPPATH\Views\Operateur\commission.php on line 23.
+ 1 APPPATH\Views\Operateur\commission.php(23): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "operateur"', 'C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\app\\Views\\Operateur\\commission.php', 23)
+ 2 SYSTEMPATH\View\View.php(240): include('C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\app\\Views\\Operateur\\commission.php')
+ 3 SYSTEMPATH\View\View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1250): CodeIgniter\View\View->render('Operateur/commission', [], true)
+ 5 APPPATH\Controllers\ConfigurationCommissionController.php(14): view('Operateur/commission', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\ConfigurationCommissionController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ConfigurationCommissionController))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\public\\index.php')
+CRITICAL - 2026-07-20 22:35:39 --> ErrorException: Undefined array key "pourcentage_comission"
+[Method: GET, Route: operateur/commission]
+in APPPATH\Views\Operateur\commission.php on line 24.
+ 1 APPPATH\Views\Operateur\commission.php(24): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "pourcentage_comission"', 'C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\app\\Views\\Operateur\\commission.php', 24)
+ 2 SYSTEMPATH\View\View.php(240): include('C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\app\\Views\\Operateur\\commission.php')
+ 3 SYSTEMPATH\View\View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1250): CodeIgniter\View\View->render('Operateur/commission', [], true)
+ 5 APPPATH\Controllers\ConfigurationCommissionController.php(14): view('Operateur/commission', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\ConfigurationCommissionController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ConfigurationCommissionController))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\Users\\HP Pavilion\\Documents\\GitHub\\Examen-projet-S4\\public\\index.php')

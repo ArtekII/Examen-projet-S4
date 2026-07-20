@@ -18,4 +18,9 @@ class ConfigurationsCommission extends Model
 
         return $config ? (float) $config['pourcentage_commission'] : 0.0;
     }
+
+    public function getConfigurations()
+    {
+        return $this->db->table('v_operateur_comission')->get()->getResultArray();
+    }
 }

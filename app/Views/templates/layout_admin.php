@@ -25,6 +25,13 @@
                         </a>
                     </li>
                     <li>
+                        <a class="sidebar__link <?= $currentPath === 'operateur/commission' ? 'sidebar__link--active' : '' ?>"
+                           href="<?= site_url('operateur/commission') ?>"
+                           <?= $currentPath === 'operateur/commission' ? 'aria-current="page"' : '' ?>>
+                            Configuration des commission
+                        </a>
+                    </li>
+                    <li>
                         <a class="sidebar__link <?= $currentPath === 'operateur/soldes' ? 'sidebar__link--active' : '' ?>"
                            href="<?= site_url('operateur/soldes') ?>"
                            <?= $currentPath === 'operateur/soldes' ? 'aria-current="page"' : '' ?>>
