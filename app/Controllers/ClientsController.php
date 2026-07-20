@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\Clients;
 use App\Models\OperationMouvement;
 use App\Models\TypeOperations;
@@ -41,7 +40,7 @@ class ClientsController extends BaseController
                 ->with('error', 'Aucun opérateur ne correspond à ce numéro.');
         }
 
-        if($operateur['id'] !== $operatorIdSimule) {
+        if ((int) $operateur['id'] !== (int) $operatorIdSimule) {
             return redirect()->back()->withInput()
                 ->with('error', 'Ce numero ne correspond pas a notre operateur');
         }
@@ -49,28 +48,26 @@ class ClientsController extends BaseController
         session()->set([
             'client_id' => $client['id'],
             'nom_client' => $client['nom_client'],
-            'operateur_id' => $operateur['id'],
         ]);
 
         return redirect()->to(site_url('client/compte'))
             ->with('success', 'Connexion réussie.');
     }
 
-    public function solde(){
+    public function solde()
+    {
         if (! session()->has('client_id')) {
             return redirect()->to(site_url('client/connexion'));
         }
 
-        $operationMouvement = new OperationMouvement();
-        $solde = $operationMouvement->getSoldeByClientId(session()->get('client_id'));
-
-        $operateurModel = new Operateurs();
-        $operateur = $operateurModel->find(session()->get('operateur_id'));
-
         return view('Client/solde', [
             'title' => 'Solde',
-            'solde' => $solde,
-            'operateur' => $operateur,
+            'solde' => (new OperationMouvement())->getSoldeByClientId(
+                (int) session()->get('client_id')
+            ),
+            'operateur' => (new Operateurs())->find(
+                (int) config('MobileMoney')->operatorId
+            ),
         ]);
     }
 
@@ -82,10 +79,14 @@ class ClientsController extends BaseController
 
         $typeOperationsModel = new TypeOperations();
         $typeOperations = $typeOperationsModel->findAll();
+        $operateurSimule = (new Operateurs())->find(
+            (int) config('MobileMoney')->operatorId
+        );
 
         return view('Client/operation', [
             'title' => 'Faire une opération',
-            'typeOperations' => $typeOperations
+            'typeOperations' => $typeOperations,
+            'prefixeOperateurSimule' => $operateurSimule['prefixe'] ?? '',
         ]);
     }
 
@@ -95,13 +96,10 @@ class ClientsController extends BaseController
             return redirect()->to(site_url('client/connexion'));
         }
 
-        if (! session()->has('operateur_id')) {
-            return redirect()->to(site_url('client/connexion'))
-                ->with('error', 'Veuillez vous reconnecter.');
-        }
-
         $config = config('MobileMoney');
         $operatorIdSimule = $config->operatorId;
+        $inclureFraisRetrait = $this->request
+            ->getPost('inclure_frais_retrait') === '1';
 
         $typeOperationId = (string) $this->request->getPost('id_type_operation');
 
@@ -130,10 +128,11 @@ class ClientsController extends BaseController
 
         $montant = (float) $montantSaisi;
         $configurationModel = new ConfigurationsTransaction();
-        $frais = $configurationModel->getFrais((int) $typeOperation['id'], $montant);
 
         $clientId = (int) session()->get('client_id');
         $beneficiaireId = $clientId;
+        $montantOperation = $montant;
+        $fraisRetraitInclus = 0.0;
 
         if ($typeOperation['libelle'] === 'Transfert') {
             $clientModel = new Clients();
@@ -155,13 +154,37 @@ class ClientsController extends BaseController
             }
 
             $beneficiaireId = (int) $beneficiaire['id'];
+
+            $operateurBeneficiaire = (new Operateurs())->getOperateurByNumero(
+                $numeroBeneficiaire
+            );
+            $estMemeOperateur = $operateurBeneficiaire
+                && (int) $operateurBeneficiaire['id'] === $operatorIdSimule;
+
+            if ($inclureFraisRetrait && $estMemeOperateur) {
+                $typeRetrait = $typeOperationsModel
+                    ->where('libelle', 'Retrait')
+                    ->first();
+
+                if ($typeRetrait) {
+                    $fraisRetraitInclus = $configurationModel->getFrais(
+                        (int) $typeRetrait['id'],
+                        $montant
+                    );
+                    $montantOperation += $fraisRetraitInclus;
+                }
+            }
         }
 
         $operationMouvement = new OperationMouvement();
+        $fraisOperation = $configurationModel->getFrais(
+            (int) $typeOperation['id'],
+            $montantOperation
+        );
 
         if (in_array($typeOperation['libelle'], ['Retrait', 'Transfert'], true)) {
             $solde = $operationMouvement->getSoldeByClientId($clientId);
-            $totalADebiter = $montant + $frais;
+            $totalADebiter = $montantOperation + $fraisOperation;
 
             if ($totalADebiter > $solde) {
                 return redirect()->back()->withInput()->with('validation', [
@@ -174,9 +197,9 @@ class ClientsController extends BaseController
         $data = [
             'id_emetteur' => $clientId,
             'id_beneficiaire' => $beneficiaireId,
-            'id_operateur' => (int) session()->get('operateur_id'),
+            'id_operateur' => (int) $operatorIdSimule,
             'id_type_operation' => (int) $typeOperation['id'],
-            'montant' => $montant,
+            'montant' => $montantOperation,
         ];
 
         if (! $operationMouvement->insert($data)) {
@@ -186,8 +209,10 @@ class ClientsController extends BaseController
 
         return redirect()->to(site_url('client/compte'))->with(
             'success',
-            'Opération enregistrée. Frais appliqués : '
-                . number_format($frais, 2, ',', ' ') . ' Ar.'
+            'Opération enregistrée. Frais d’opération : '
+                . number_format($fraisOperation, 2, ',', ' ') . ' Ar. '
+                . 'Frais de retrait inclus : '
+                . number_format($fraisRetraitInclus, 2, ',', ' ') . ' Ar.'
         );
     }
 
@@ -208,7 +233,7 @@ class ClientsController extends BaseController
 
     public function deconnexion()
     {
-        session()->remove(['client_id', 'nom_client', 'operateur_id']);
+        session()->remove(['client_id', 'nom_client']);
 
         return redirect()->to(site_url('client/connexion'))
             ->with('success', 'Vous êtes déconnecté.');

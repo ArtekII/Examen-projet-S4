@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\OperationMouvement;
 use App\Models\Operateurs;
-use CodeIgniter\HTTP\RedirectResponse;
 
 class Home extends BaseController
 {
@@ -17,13 +16,12 @@ class Home extends BaseController
         $operationMouvement = new OperationMouvement();
         $solde = $operationMouvement->getSoldeByClientId(session()->get('client_id'));
 
-        $operateurModel = new Operateurs();
-        $operateur = $operateurModel->find(session()->get('operateur_id'));
-
         return view('Client/solde', [
             'title' => 'Espace client',
             'solde' => $solde,
-            'operateur' => $operateur,
+            'operateur' => (new Operateurs())->find(
+                (int) config('MobileMoney')->operatorId
+            ),
         ]);
     }
 }
