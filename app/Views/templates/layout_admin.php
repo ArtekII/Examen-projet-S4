@@ -26,6 +26,13 @@
                         </a>
                     </li>
                     <li>
+                        <a class="sidebar__link <?= str_starts_with($currentPath, 'operateur/commission') ? 'sidebar__link--active' : '' ?>"
+                           href="<?= site_url('operateur/commission') ?>"
+                           <?= str_starts_with($currentPath, 'operateur/commission') ? 'aria-current="page"' : '' ?>>
+                            Configuration des commissions
+                        </a>
+                    </li>
+                    <li>
                         <a class="sidebar__link <?= $currentPath === 'operateur/soldes' ? 'sidebar__link--active' : '' ?>"
                             href="<?= site_url('operateur/soldes') ?>" <?= $currentPath === 'operateur/soldes' ? 'aria-current="page"' : '' ?>>
                             Soldes des clients
@@ -38,9 +45,10 @@
                         </a>
                     </li>
                     <li>
-                        <a class="sidebar__link <?= $currentPath === 'operateur/prefixe' ? 'sidebar__link--active' : '' ?>"
-                            href="<?= site_url('operateur/prefixe') ?>" <?= $currentPath === 'operateur/prefixe' ? 'aria-current="page"' : '' ?>>
-                            Gestion des préfixes
+                        <a class="sidebar__link <?= str_starts_with($currentPath, 'operateur/prefixe') ? 'sidebar__link--active' : '' ?>"
+                           href="<?= site_url('operateur/prefixe') ?>"
+                           <?= str_starts_with($currentPath, 'operateur/prefixe') ? 'aria-current="page"' : '' ?>>
+                            Configuration des préfixes
                         </a>
                     </li>
 

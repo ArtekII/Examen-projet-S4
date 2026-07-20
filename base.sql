@@ -211,5 +211,13 @@ LEFT JOIN commissions_percues cp
 GROUP BY o.id, o.nom_operateur;
 
 
+CREATE VIEW v_operateur_comission AS
+SELECT
+    cc.id,
+    o.id as id_operateur,
+    o.nom_operateur,
+    cc.pourcentage_commission
+FROM configurations_commission cc
+JOIN operateurs o ON o.id = cc.id_operateur;
 -- En cas de delete aza adino manao anity commande ity sinon tsy mifanaraka le id
 DELETE FROM sqlite_sequence WHERE name IN ('clients', 'operateurs', 'type_operations', 'operation_mouvement');

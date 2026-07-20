@@ -22,6 +22,11 @@ $routes->group('operateur', function ($routes) {
     $routes->post('store', 'ConfigurationTransactionController::store');
     $routes->get('soldes', 'ConfigurationTransactionController::soldes');
     $routes->get('gains', 'ConfigurationTransactionController::gains');
+    $routes->get('commission', 'ConfigurationCommissionController::index');
+    $routes->get('commission/(:num)/edit', 'ConfigurationCommissionController::edit/$1');
+    $routes->post('commission/(:num)', 'ConfigurationCommissionController::update/$1');
     $routes->get('prefixe', 'OperateursController::index');
     $routes->get('commissions', 'ConfigurationTransactionController::commissions');
+    $routes->get('prefixe/(:num)/edit', 'OperateursController::edit/$1');
+    $routes->post('prefixe/(:num)', 'OperateursController::update/$1');
 });

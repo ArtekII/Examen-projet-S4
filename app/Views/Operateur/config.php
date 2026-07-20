@@ -8,8 +8,8 @@ $success = session('success');
 
 <div class="admin-page">
     <div class="admin-page__header">
-        <h1>Configuration des préfixes</h1>
-        <p>Consultez et modifiez les préfixes téléphoniques associés aux opérateurs.</p>
+        <h1>Configuration des commissions</h1>
+        <p>Consultez et modifiez le pourcentage de commission de chaque opérateur.</p>
     </div>
 
     <?php if ($success): ?>
@@ -18,11 +18,11 @@ $success = session('success');
         </div>
     <?php endif; ?>
 
-    <?php if (isset($operateurEdition)): ?>
+    <?php if (isset($configurationEdition)): ?>
         <form
             class="admin-form"
             method="post"
-            action="<?= site_url('operateur/prefixe/' . $operateurEdition['id']) ?>"
+            action="<?= site_url('operateur/commission/' . $configurationEdition['id']) ?>"
         >
             <?= csrf_field() ?>
 
@@ -31,32 +31,34 @@ $success = session('success');
                 <input
                     type="text"
                     id="nom_operateur"
-                    value="<?= esc($operateurEdition['nom_operateur']) ?>"
+                    value="<?= esc($configurationEdition['nom_operateur']) ?>"
                     disabled
                 >
             </div>
 
             <div class="admin-form__group">
-                <label for="prefixe">Préfixe téléphonique</label>
+                <label for="pourcentage_commission">Pourcentage de commission</label>
                 <input
-                    type="text"
-                    name="prefixe"
-                    id="prefixe"
-                    value="<?= esc(old('prefixe', $operateurEdition['prefixe'])) ?>"
-                    inputmode="numeric"
-                    minlength="3"
-                    maxlength="3"
-                    pattern="[0-9]{3}"
+                    type="number"
+                    name="pourcentage_commission"
+                    id="pourcentage_commission"
+                    value="<?= esc(old(
+                        'pourcentage_commission',
+                        $configurationEdition['pourcentage_commission']
+                    )) ?>"
+                    min="0"
+                    max="100"
+                    step="0.01"
                     required
                 >
                 <div class="error">
-                    <?= esc($errors['prefixe'] ?? '') ?>
+                    <?= esc($errors['pourcentage_commission'] ?? '') ?>
                 </div>
             </div>
 
             <div class="admin-actions">
                 <button class="admin-button" type="submit">Enregistrer</button>
-                <a class="admin-button admin-button--secondary" href="<?= site_url('operateur/prefixe') ?>">
+                <a class="admin-button admin-button--secondary" href="<?= site_url('operateur/commission') ?>">
                     Annuler
                 </a>
             </div>
@@ -69,26 +71,26 @@ $success = session('success');
                 <tr>
                     <th>ID</th>
                     <th>Opérateur</th>
-                    <th>Préfixe</th>
+                    <th>Pourcentage de commission</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($operateurs === []): ?>
+                <?php if ($configurations === []): ?>
                     <tr>
-                        <td colspan="4" class="muted">Aucun opérateur enregistré.</td>
+                        <td colspan="4" class="muted">Aucune configuration de commission.</td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($operateurs as $operateur): ?>
+                    <?php foreach ($configurations as $configuration): ?>
                         <tr>
-                            <td><?= esc($operateur['id']) ?></td>
-                            <td><?= esc($operateur['nom_operateur']) ?></td>
-                            <td><?= esc($operateur['prefixe']) ?></td>
+                            <td><?= esc($configuration['id']) ?></td>
+                            <td><?= esc($configuration['nom_operateur']) ?></td>
+                            <td><?= esc($configuration['pourcentage_commission']) ?> %</td>
                             <td>
                                 <a
                                     class="admin-button admin-button--small"
                                     href="<?= site_url(
-                                        'operateur/prefixe/' . $operateur['id'] . '/edit'
+                                        'operateur/commission/' . $configuration['id'] . '/edit'
                                     ) ?>"
                                 >
                                     Modifier
