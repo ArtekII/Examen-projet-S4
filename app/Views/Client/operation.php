@@ -41,12 +41,16 @@
             <div><?= esc($validation['montant'] ?? '') ?></div>
         </div>
 
-        <div id="include-withdrawal-fees-group" class="form-group">
+        <div id="include-withdrawal-fees-group"
+             class="form-group"
+             data-operator-prefix="<?= esc($prefixeOperateurSimule) ?>"
+             hidden>
             <label>
                 <input
                     type="checkbox"
                     name="inclure_frais_retrait"
                     value="1"
+                    <?= old('inclure_frais_retrait') === '1' ? 'checked' : '' ?>
                 >
                 Inclure les frais de retrait
             </label>
