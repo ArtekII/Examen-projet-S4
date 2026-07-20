@@ -6,3 +6,13 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+
+$routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) {
+    $routes->get('connexion', 'ClientsController::index');
+    $routes->post('login', 'ClientsController::login');
+    $routes->get('compte', 'ClientsController::solde');
+    $routes->get('operation', 'ClientsController::operation');
+    $routes->post('operation', 'ClientsController::store');
+    $routes->get('historique', 'ClientsController::historique');
+    $routes->post('deconnexion', 'ClientsController::deconnexion');
+});

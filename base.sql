@@ -20,7 +20,9 @@ CREATE TABLE configurations_transaction(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     borne_min DECIMAL(10, 2) DEFAULT 0.00,
     borne_max DECIMAL(10, 2) DEFAULT 0.00,
-    montant_frais DECIMAL(10, 2) DEFAULT 0.00
+    montant_frais DECIMAL(10, 2) DEFAULT 0.00,
+    id_type_operation INTEGER NOT NULL,
+    FOREIGN KEY (id_type_operation) REFERENCES type_operations(id)
 );
 
 CREATE TABLE operation_mouvement(
@@ -36,3 +38,59 @@ CREATE TABLE operation_mouvement(
     FOREIGN KEY (id_operateur) REFERENCES operateurs(id),
     FOREIGN KEY (id_type_operation) REFERENCES type_operations(id)
 );
+
+-- CREATE TABLE solde_clients(
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_client INTEGER NOT NULL,
+--     solde DECIMAL(10, 2) DEFAULT 0.00,
+--     date_creation DATETIME NOT NULL,
+--     FOREIGN KEY (id_client) REFERENCES clients(id)
+-- );
+
+---- INIT DATA v1 ----
+INSERT INTO type_operations (libelle) VALUES ('Depot');
+INSERT INTO type_operations (libelle) VALUES ('Retrait');
+INSERT INTO type_operations (libelle) VALUES ('Transfert');
+
+INSERT INTO clients (nom_client, numero) VALUES ('Client A', '0380000000');
+INSERT INTO clients (nom_client, numero) VALUES ('Client B', '0370000000');
+
+CREATE VIEW "v_get_solde_client" AS
+SELECT
+    c.id,
+    c.nom_client,
+    COALESCE(SUM(
+        CASE 
+            WHEN om.id_type_operation = 1 THEN om.montant
+            WHEN om.id_type_operation = 2 THEN -om.montant
+            WHEN om.id_type_operation = 3 AND om.id_beneficiaire = c.id THEN om.montant
+            WHEN om.id_type_operation = 3 AND om.id_emetteur = c.id THEN -om.montant
+        END
+    ), 0) AS SOLDE
+FROM clients c
+LEFT JOIN operation_mouvement om 
+    ON c.id = om.id_emetteur OR c.id = om.id_beneficiaire
+GROUP BY c.id, c.nom_client;
+
+CREATE VIEW "v_get_historique_client" AS
+SELECT
+    om.id AS operation_id,
+    om.id_emetteur,
+    c1.nom_client AS emetteur,
+    om.id_beneficiaire,
+    c2.nom_client AS beneficiaire,
+    o.libelle AS type_operation,
+    om.montant,
+    om.date_operation,
+    CASE
+        WHEN o.libelle = 'Depot' THEN 'Recu'
+        WHEN o.libelle = 'Retrait' THEN 'Envoye'
+        WHEN o.libelle = 'Transfert' AND c1.id = om.id_emetteur THEN 'Envoye'
+        WHEN o.libelle = 'Transfert' AND c1.id = om.id_beneficiaire THEN 'Recu'
+    END AS sens
+FROM
+    operation_mouvement om
+JOIN clients c1 ON om.id_emetteur = c1.id
+LEFT JOIN clients c2 ON om.id_beneficiaire = c2.id
+JOIN type_operations o ON om.id_type_operation = o.id;
+
