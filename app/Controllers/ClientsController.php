@@ -20,7 +20,7 @@ class ClientsController extends BaseController
     }
 
     public function login(){
-        $numero = $this->request->getPost('numero');
+        $numero = $this->normalizeNumero($this->request->getPost('numero'));
         $clientModel = new Clients();
         $client = $clientModel->getClientByNumero($numero);
 
@@ -113,9 +113,10 @@ class ClientsController extends BaseController
 
         if ($typeOperation['libelle'] === 'Transfert') {
             $clientModel = new Clients();
-            $beneficiaire = $clientModel->getClientByNumero(
-                trim((string) $this->request->getPost('numero_beneficiaire'))
+            $numeroBeneficiaire = $this->normalizeNumero(
+                $this->request->getPost('numero_beneficiaire')
             );
+            $beneficiaire = $clientModel->getClientByNumero($numeroBeneficiaire);
 
             if (! $beneficiaire) {
                 return redirect()->back()->withInput()->with('validation', [
@@ -171,5 +172,14 @@ class ClientsController extends BaseController
 
         return redirect()->to(site_url('client/connexion'))
             ->with('success', 'Vous êtes déconnecté.');
+    }
+
+    private function normalizeNumero($numero): string
+    {
+        if (! is_string($numero)) {
+            return '';
+        }
+
+        return preg_replace('/\s+/u', '', trim($numero)) ?? '';
     }
 }
