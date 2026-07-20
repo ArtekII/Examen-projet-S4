@@ -1,0 +1,28 @@
+.commissions-page .table-wrapper {
+    margin-top: 1.5rem;
+}
+
+.commission-summary {
+    max-width: 420px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #bfdbfe;
+    border-radius: .65rem;
+    background: var(--admin-primary-light);
+}
+
+.commission-summary__label {
+    display: block;
+    margin-bottom: .4rem;
+    color: #475569;
+    font-size: .9rem;
+}
+
+.commission-summary__value {
+    color: var(--admin-primary);
+    font-size: 1.5rem;
+}
+
+.commission-amount {
+    color: #166534;
+    font-weight: 700;
+}
