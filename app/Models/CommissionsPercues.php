@@ -9,11 +9,11 @@ class CommissionsPercues extends Model
     protected $table = 'commissions_percues';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
+    protected $useTimestamps = false;
     protected $allowedFields = [
         'id_operation_mouvement',
         'id_operateur_beneficiaire',
         'montant_commission',
         'date_commission',
     ];
-    protected $useTimestamps = false;
 }

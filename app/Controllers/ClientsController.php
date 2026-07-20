@@ -198,7 +198,11 @@ class ClientsController extends BaseController
             );
         }
 
-        $erreur = $operationModel->enregistrerTout($plan['operations']);
+        // ==== MODIFIÉ : on passe aussi $plan['commissions'] ====
+        $erreur = $operationModel->enregistrerTout(
+            $plan['operations'],
+            $plan['commissions']
+        );
 
         if ($erreur !== null) {
             return redirect()->back()->withInput()->with('error', $erreur);
@@ -209,10 +213,17 @@ class ClientsController extends BaseController
             ? "{$nombreOperations} transferts enregistrés."
             : 'Opération enregistrée.';
 
+        // ==== MODIFIÉ : ajout du détail commission dans le message ====
+        $messageFrais = ' Frais totaux : '
+            . number_format($plan['total_frais'], 2, ',', ' ') . ' Ar.';
+
+        $messageCommission = $plan['total_commission'] > 0
+            ? ' Commission : ' . number_format($plan['total_commission'], 2, ',', ' ') . ' Ar.'
+            : '';
+
         return redirect()->to(site_url('client/compte'))->with(
             'success',
-            $message . ' Frais totaux : '
-                . number_format($plan['total_frais'], 2, ',', ' ') . ' Ar.'
+            $message . $messageFrais . $messageCommission
         );
     }
 

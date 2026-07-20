@@ -10,6 +10,7 @@ use App\Models\TypeOperationModel;
 use App\Models\GainsFraisModel;
 use App\Models\TotalGainsFraisModel;
 
+use App\Models\CommissionsParOperateurModel;
 class ConfigurationTransactionController extends BaseController
 {
     public function index()
@@ -71,6 +72,19 @@ class ConfigurationTransactionController extends BaseController
             'totalFiltre' => $totalFiltre,
             'types' => $typeModel->findAll(),
             'selectedType' => $idType,
+        ]);
+    }
+
+    public function commissions()
+    {
+        $model = new CommissionsParOperateurModel();
+
+        return view('Operateur/commissions', [
+            'commissions' => $model
+            ->where('id_operateur !=', (int) config('MobileMoney')->operatorId)
+            ->orderBy('total_commission', 'DESC')
+            ->findAll(),
+            
         ]);
     }
 }

@@ -23,4 +23,5 @@ $routes->group('operateur', function ($routes) {
     $routes->get('soldes', 'ConfigurationTransactionController::soldes');
     $routes->get('gains', 'ConfigurationTransactionController::gains');
     $routes->get('prefixe', 'OperateursController::index');
+    $routes->get('commissions', 'ConfigurationTransactionController::commissions');
 });

@@ -6,13 +6,13 @@ use CodeIgniter\Model;
 
 class OperationMouvement extends Model
 {
-    protected $table            = 'operation_mouvement';
-    protected $primaryKey       = 'id';
+    protected $table = 'operation_mouvement';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [
+    protected $returnType = 'array';
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = [
         'id_emetteur',
         'id_beneficiaire',
         'id_operateur',
@@ -28,20 +28,20 @@ class OperationMouvement extends Model
 
     // Dates
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'date_operation';
-    protected $updatedField  = '';
-    protected $deletedField  = 'deleted_at';
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'date_operation';
+    protected $updatedField = '';
+    protected $deletedField = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [
+    protected $validationRules = [
         'id_emetteur' => 'required|integer',
         'id_beneficiaire' => 'required|integer',
         'id_operateur' => 'required|integer',
         'id_type_operation' => 'required|integer',
         'montant' => 'required|decimal|greater_than[0]'
     ];
-    protected $validationMessages   = [
+    protected $validationMessages = [
         'id_emetteur' => [
             'required' => 'L\'ID de l\'émetteur est requis.',
             'integer' => 'L\'ID de l\'émetteur doit être un entier.'
@@ -62,28 +62,28 @@ class OperationMouvement extends Model
             'decimal' => 'Le montant doit être un nombre décimal avec 2 décimales.'
         ]
     ];
-    protected $skipValidation       = false;
+    protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $beforeInsert = [];
+    protected $afterInsert = [];
+    protected $beforeUpdate = [];
+    protected $afterUpdate = [];
+    protected $beforeFind = [];
+    protected $afterFind = [];
+    protected $beforeDelete = [];
+    protected $afterDelete = [];
 
     public function getSoldeByClientId(int $clientId): float
     {
         $result = $this->db
-        ->table('v_get_solde_client')
-        ->select('SOLDE')
-        ->where('id', $clientId)
-        ->get()
-        ->getRowArray();
+            ->table('v_get_solde_client')
+            ->select('SOLDE')
+            ->where('id', $clientId)
+            ->get()
+            ->getRowArray();
 
         return (float) ($result['SOLDE'] ?? 0.00);
     }
@@ -93,8 +93,8 @@ class OperationMouvement extends Model
         $rows = $this->db
             ->table('v_get_historique_client')
             ->groupStart()
-                ->where('id_emetteur', $clientId)
-                ->orWhere('id_beneficiaire', $clientId)
+            ->where('id_emetteur', $clientId)
+            ->orWhere('id_beneficiaire', $clientId)
             ->groupEnd()
             ->orderBy('date_operation', 'DESC')
             ->get()
@@ -102,10 +102,10 @@ class OperationMouvement extends Model
 
         foreach ($rows as &$row) {
             $row['sens'] = match (true) {
-                $row['type_operation'] === 'Depot'     => 'Recu',
-                $row['type_operation'] === 'Retrait'   => 'Envoye',
-                $row['type_operation'] === 'Transfert' && (int)$row['id_beneficiaire'] === $clientId => 'Recu',
-                $row['type_operation'] === 'Transfert' && (int)$row['id_emetteur'] === $clientId     => 'Envoye',
+                $row['type_operation'] === 'Depot' => 'Recu',
+                $row['type_operation'] === 'Retrait' => 'Envoye',
+                $row['type_operation'] === 'Transfert' && (int) $row['id_beneficiaire'] === $clientId => 'Recu',
+                $row['type_operation'] === 'Transfert' && (int) $row['id_emetteur'] === $clientId => 'Envoye',
                 default => null,
             };
         }
@@ -115,7 +115,7 @@ class OperationMouvement extends Model
 
     public function normaliserMontant($montant): ?float
     {
-        if (! is_numeric($montant) || (float) $montant <= 0) {
+        if (!is_numeric($montant) || (float) $montant <= 0) {
             return null;
         }
 
@@ -165,59 +165,75 @@ class OperationMouvement extends Model
         }
 
         $operations = [];
+        $commissions = [];
         $totalADebiter = 0.0;
         $totalFrais = 0.0;
+        $totalCommission = 0.0;
 
         foreach ($beneficiaires as $index => $beneficiaire) {
+            $montantPur = $montants[$index];
             $fraisRetrait = 0.0;
             $commission = 0.0;
 
             if ($typeRetrait && $beneficiaire['meme_operateur']) {
                 $fraisRetrait = $configurationModel->getFrais(
                     (int) $typeRetrait['id'],
-                    $montants[$index]
+                    $montantPur
                 );
             }
 
-            if ($estTransfert
-                && ! $beneficiaire['meme_operateur']
-                && $beneficiaire['operateur_id'] !== null) {
+            if (
+                $estTransfert
+                && !$beneficiaire['meme_operateur']
+                && $beneficiaire['operateur_id'] !== null
+            ) {
                 $pourcentage = $commissionModel->getPourcentage(
                     $beneficiaire['operateur_id']
                 );
                 $commission = round(
-                    $montants[$index] * $pourcentage / 100,
+                    $montantPur * $pourcentage / 100,
                     2
                 );
             }
 
-            $montantOperation = $montants[$index]
-                + $fraisRetrait
-                + $commission;
+            // Frais habituels calculés sur le montant pur (pas gonflé)
             $fraisOperation = $configurationModel->getFrais(
                 (int) $typeOperation['id'],
-                $montantOperation
+                $montantPur
             );
 
+            // Le bénéficiaire reçoit TOUJOURS le montant pur
             $operations[] = [
                 'id_emetteur' => $clientId,
                 'id_beneficiaire' => $beneficiaire['id'],
                 'id_operateur' => $operateurId,
                 'id_type_operation' => (int) $typeOperation['id'],
-                'montant' => $montantOperation,
+                'montant' => $montantPur,
             ];
 
-            if ($typeOperation['libelle'] === 'Retrait' || $estTransfert) {
-                $totalADebiter += $montantOperation + $fraisOperation;
+            // La commission est trackée à part, pour insertion dans commissions_percues
+            if ($commission > 0) {
+                $commissions[] = [
+                    'index_operation' => $index, // pour relier après coup à l'id inséré
+                    'id_operateur_beneficiaire' => $beneficiaire['operateur_id'],
+                    'montant_commission' => $commission,
+                ];
             }
 
-            $totalFrais += $fraisOperation + $fraisRetrait + $commission;
+            if ($typeOperation['libelle'] === 'Retrait' || $estTransfert) {
+                $totalADebiter += $montantPur + $fraisOperation + $fraisRetrait + $commission;
+            }
+
+            $totalFrais += $fraisOperation + $fraisRetrait;
+            $totalCommission += $commission;
         }
 
         return [
             'operations' => $operations,
+            'commissions' => $commissions,
             'total_a_debiter' => $totalADebiter,
             'total_frais' => $totalFrais,
+            'total_commission' => $totalCommission,
         ];
     }
 
@@ -226,21 +242,48 @@ class OperationMouvement extends Model
         return $this->getSoldeByClientId($clientId) >= $montant;
     }
 
-    public function enregistrerTout(array $operations): ?string
+    public function enregistrerTout(array $operations, array $commissions = []): ?string
     {
         $this->db->transBegin();
 
         try {
-            foreach ($operations as $operation) {
-                if ($this->insert($operation) === false) {
+            $idsInseres = [];
+
+            foreach ($operations as $index => $operation) {
+                $idInsere = $this->insert($operation);
+
+                if ($idInsere === false) {
                     $this->db->transRollback();
 
                     return implode(' ', $this->errors())
                         ?: 'Impossible d’enregistrer l’opération.';
                 }
+
+                $idsInseres[$index] = $idInsere;
             }
 
-            if (! $this->db->transCommit()) {
+            if (!empty($commissions)) {
+                $commissionModel = new CommissionsPercues();
+
+                foreach ($commissions as $commissionData) {
+                    $idOperation = $idsInseres[$commissionData['index_operation']];
+
+                    $inséré = $commissionModel->insert([
+                        'id_operation_mouvement' => $idOperation,
+                        'id_operateur_beneficiaire' => $commissionData['id_operateur_beneficiaire'],
+                        'montant_commission' => $commissionData['montant_commission'],
+                        'date_commission' => date('Y-m-d H:i:s'),
+                    ]);
+
+                    if ($inséré === false) {
+                        $this->db->transRollback();
+
+                        return 'Impossible d’enregistrer la commission.';
+                    }
+                }
+            }
+
+            if (!$this->db->transCommit()) {
                 $this->db->transRollback();
 
                 return 'Impossible de terminer l’envoi.';
