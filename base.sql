@@ -57,9 +57,41 @@ CREATE TABLE operation_mouvement(
 ---- INIT DATA v1 ----
 INSERT INTO type_operations (libelle) VALUES ('Depot');
 INSERT INTO type_operations (libelle) VALUES ('Retrait');
-INSERT INTO type_operations (libelle) VALUES ('Transfert');
+-- INSERT INTO type_operations (libelle) VALUES ('Transfert');
 
-CREATE VIEW "v_get_solde_client" AS
+-- CREATE VIEW "v_get_solde_client" AS
+-- WITH mouvements_avec_frais AS (
+--     SELECT
+--         om.*,
+--         COALESCE((
+--             SELECT ct.montant_frais
+--             FROM configurations_transaction ct
+--             WHERE ct.id_type_operation = om.id_type_operation
+--               AND om.montant BETWEEN ct.borne_min AND ct.borne_max
+--             ORDER BY ct.id ASC
+--             LIMIT 1
+--         ), 0) AS montant_frais
+--     FROM operation_mouvement om
+-- )
+-- SELECT
+--     c.id,
+--     c.nom_client,
+--     COALESCE(SUM(
+--         CASE 
+--             WHEN om.id_type_operation = 1 THEN om.montant - om.montant_frais
+--             WHEN om.id_type_operation = 2 THEN -(om.montant + om.montant_frais)
+--             WHEN om.id_type_operation = 3 AND om.id_beneficiaire = c.id THEN om.montant
+--             WHEN om.id_type_operation = 3 AND om.id_emetteur = c.id THEN -(om.montant + om.montant_frais)
+--         END
+--     ), 0) AS SOLDE
+-- FROM clients c
+-- LEFT JOIN mouvements_avec_frais om
+--     ON c.id = om.id_emetteur OR c.id = om.id_beneficiaire
+-- GROUP BY c.id, c.nom_client;
+
+
+-- Nouvelle view efa refacto
+CREATE VIEW v_get_solde_client AS
 WITH mouvements_avec_frais AS (
     SELECT
         om.*,
@@ -67,7 +99,7 @@ WITH mouvements_avec_frais AS (
             SELECT ct.montant_frais
             FROM configurations_transaction ct
             WHERE ct.id_type_operation = om.id_type_operation
-              AND om.montant BETWEEN ct.borne_min AND ct.borne_max
+            AND om.montant BETWEEN ct.borne_min AND ct.borne_max
             ORDER BY ct.id ASC
             LIMIT 1
         ), 0) AS montant_frais
@@ -87,7 +119,9 @@ SELECT
 FROM clients c
 LEFT JOIN mouvements_avec_frais om
     ON c.id = om.id_emetteur OR c.id = om.id_beneficiaire
+WHERE substr(c.numero, 1, 3) = (SELECT prefixe FROM operateurs WHERE nom_operateur = 'Orange Money')
 GROUP BY c.id, c.nom_client;
+
 
 CREATE VIEW "v_get_historique_client" AS
 SELECT
@@ -111,8 +145,28 @@ JOIN clients c1 ON om.id_emetteur = c1.id
 LEFT JOIN clients c2 ON om.id_beneficiaire = c2.id
 JOIN type_operations o ON om.id_type_operation = o.id;
 
+-- CREATE VIEW v_gains_frais AS
+-- SELECT
+--     om.id AS id_operation,
+--     om.date_operation,
+--     om.id_type_operation,
+--     t.libelle AS type_operation,
+--     om.montant,
+--     ct.montant_frais
+-- FROM operation_mouvement om
+-- JOIN type_operations t 
+--     ON t.id = om.id_type_operation
+-- LEFT JOIN configurations_transaction ct
+--     ON ct.id_type_operation = om.id_type_operation
+--     AND om.montant BETWEEN ct.borne_min AND ct.borne_max
+-- ORDER BY om.date_operation;
+
+
+-- Nouvelle view gains_frais efa refacto
+
 CREATE VIEW v_gains_frais AS
 SELECT
+    c.nom_client as nom_client,
     om.id AS id_operation,
     om.date_operation,
     om.id_type_operation,
@@ -122,9 +176,12 @@ SELECT
 FROM operation_mouvement om
 JOIN type_operations t 
     ON t.id = om.id_type_operation
+JOIN clients c
+    ON c.id = om.id_emetteur
 LEFT JOIN configurations_transaction ct
     ON ct.id_type_operation = om.id_type_operation
     AND om.montant BETWEEN ct.borne_min AND ct.borne_max
+WHERE substr(c.numero, 1, 3) = (SELECT prefixe FROM operateurs WHERE nom_operateur = 'Orange Money')
 ORDER BY om.date_operation;
 
 CREATE VIEW v_total_gains_frais AS
