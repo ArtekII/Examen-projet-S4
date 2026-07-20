@@ -8,6 +8,7 @@ use App\Models\OperationMouvement;
 use App\Models\TypeOperations;
 use App\Models\Operateurs;
 use App\Models\ConfigurationsTransaction;
+use App\Models\ConfigurationsCommission; // NOUVEAU: Ajout du modèle
 
 class ClientsController extends BaseController
 {
@@ -15,11 +16,11 @@ class ClientsController extends BaseController
     {
         return view('Client/connexion', [
             'title' => 'Connexion'
-        ]
-        );
+        ]);
     }
 
-    public function login(){
+    public function login()
+    {
         $numero = $this->normalizeNumero($this->request->getPost('numero'));
         $clientModel = new Clients();
         $client = $clientModel->getClientByNumero($numero);
@@ -133,6 +134,7 @@ class ClientsController extends BaseController
         $beneficiaireId = $clientId;
         $montantOperation = $montant;
         $fraisRetraitInclus = 0.0;
+        $montantCommission = 0.0; // NOUVEAU : Initialisation hors du if pour le rendre accessible plus tard
 
         if ($typeOperation['libelle'] === 'Transfert') {
             $clientModel = new Clients();
@@ -161,6 +163,7 @@ class ClientsController extends BaseController
             $estMemeOperateur = $operateurBeneficiaire
                 && (int) $operateurBeneficiaire['id'] === $operatorIdSimule;
 
+            // Gestion Frais de retrait inclus (Même opérateur)
             if ($inclureFraisRetrait && $estMemeOperateur) {
                 $typeRetrait = $typeOperationsModel
                     ->where('libelle', 'Retrait')
@@ -174,9 +177,25 @@ class ClientsController extends BaseController
                     $montantOperation += $fraisRetraitInclus;
                 }
             }
+
+            // ==== NOUVEAU : calcul de la commission inter-opérateur ====
+            if ($operateurBeneficiaire && ! $estMemeOperateur) {
+                $configCommissionModel = new ConfigurationsCommission();
+                $pourcentageCommission = $configCommissionModel->getPourcentage(
+                    (int) $operateurBeneficiaire['id']
+                );
+
+                if ($pourcentageCommission > 0) {
+                    $montantCommission = $montant * ($pourcentageCommission / 100);
+                    $montantOperation += $montantCommission;
+                }
+            }
         }
 
         $operationMouvement = new OperationMouvement();
+        
+        // Le montant utilisé pour calculer les frais standards prend maintenant 
+        // en compte la potentielle commission inter-opérateur déjà ajoutée
         $fraisOperation = $configurationModel->getFrais(
             (int) $typeOperation['id'],
             $montantOperation
@@ -207,13 +226,19 @@ class ClientsController extends BaseController
                 ->with('validation', $operationMouvement->errors());
         }
 
-        return redirect()->to(site_url('client/compte'))->with(
-            'success',
-            'Opération enregistrée. Frais d’opération : '
-                . number_format($fraisOperation, 2, ',', ' ') . ' Ar. '
-                . 'Frais de retrait inclus : '
-                . number_format($fraisRetraitInclus, 2, ',', ' ') . ' Ar.'
-        );
+        // Constitution du message de retour dynamique
+        $messageRetour = 'Opération enregistrée. Frais d’opération : ' 
+            . number_format($fraisOperation, 2, ',', ' ') . ' Ar. ';
+            
+        if ($fraisRetraitInclus > 0) {
+            $messageRetour .= 'Frais de retrait inclus : ' . number_format($fraisRetraitInclus, 2, ',', ' ') . ' Ar. ';
+        }
+
+        if ($montantCommission > 0) {
+            $messageRetour .= 'Commission inter-opérateur : ' . number_format($montantCommission, 2, ',', ' ') . ' Ar.';
+        }
+
+        return redirect()->to(site_url('client/compte'))->with('success', trim($messageRetour));
     }
 
     public function historique()

@@ -21,7 +21,22 @@ CREATE TABLE configurations_commission(
     id_operateur INTEGER NOT NULL,
     pourcentage_commission DECIMAL(10, 2) DEFAULT 0.00,
     FOREIGN KEY (id_operateur) REFERENCES operateurs(id)
-)
+);
+--- Donnée configuration commission
+INSERT INTO configurations_commission (id_operateur,pourcentage_commission) VALUES
+(2,50.00),
+(3,60.00);
+
+CREATE TABLE commissions_percues(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_operation_mouvement INTEGER NOT NULL,
+    id_operateur_beneficiaire INTEGER NOT NULL,
+    montant_commission DECIMAL(10, 2) DEFAULT 0.00,
+    date_commission DATETIME NOT NULL,
+    FOREIGN KEY (id_operation_mouvement) REFERENCES operation_mouvement(id),
+    FOREIGN KEY (id_operateur_beneficiaire) REFERENCES operateurs(id)
+);
+
 
 CREATE TABLE configurations_transaction(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,13 +61,7 @@ CREATE TABLE operation_mouvement(
     FOREIGN KEY (id_type_operation) REFERENCES type_operations(id)
 );
 
--- CREATE TABLE solde_clients(
---     id INTEGER PRIMARY KEY AUTOINCREMENT,
---     id_client INTEGER NOT NULL,
---     solde DECIMAL(10, 2) DEFAULT 0.00,
---     date_creation DATETIME NOT NULL,
---     FOREIGN KEY (id_client) REFERENCES clients(id)
--- );
+
 
 ---- INIT DATA v1 ----
 INSERT INTO type_operations (libelle) VALUES ('Depot');
