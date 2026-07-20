@@ -146,6 +146,49 @@ body {
     background: #172554;
 }
 
+a.admin-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.admin-button--secondary {
+    color: var(--admin-text);
+    background: #e2e8f0;
+}
+
+.admin-button--secondary:hover {
+    background: #cbd5e1;
+}
+
+.admin-button--small {
+    min-height: 34px;
+    padding: .45rem .75rem;
+    font-size: .9rem;
+}
+
+.admin-actions {
+    display: flex;
+    gap: .75rem;
+}
+
+.admin-actions .admin-button {
+    flex: 1;
+}
+
+.admin-alert {
+    margin-bottom: 1.5rem;
+    padding: .85rem 1rem;
+    border-radius: .5rem;
+}
+
+.admin-alert--success {
+    border: 1px solid #86efac;
+    color: #166534;
+    background: #dcfce7;
+}
+
 .admin-form > .admin-button {
     width: 100%;
 }

@@ -25,10 +25,10 @@
                         </a>
                     </li>
                     <li>
-                        <a class="sidebar__link <?= $currentPath === 'operateur/commission' ? 'sidebar__link--active' : '' ?>"
+                        <a class="sidebar__link <?= str_starts_with($currentPath, 'operateur/commission') ? 'sidebar__link--active' : '' ?>"
                            href="<?= site_url('operateur/commission') ?>"
-                           <?= $currentPath === 'operateur/commission' ? 'aria-current="page"' : '' ?>>
-                            Configuration des commission
+                           <?= str_starts_with($currentPath, 'operateur/commission') ? 'aria-current="page"' : '' ?>>
+                            Configuration des commissions
                         </a>
                     </li>
                     <li>
@@ -46,10 +46,10 @@
                         </a>
                     </li>
                     <li>
-                        <a class="sidebar__link <?= $currentPath === 'operateur/prefixe' ? 'sidebar__link--active' : '' ?>"
+                        <a class="sidebar__link <?= str_starts_with($currentPath, 'operateur/prefixe') ? 'sidebar__link--active' : '' ?>"
                            href="<?= site_url('operateur/prefixe') ?>"
-                           <?= $currentPath === 'operateur/prefixe' ? 'aria-current="page"' : '' ?>>
-                            Gestion des préfixes
+                           <?= str_starts_with($currentPath, 'operateur/prefixe') ? 'aria-current="page"' : '' ?>>
+                            Configuration des préfixes
                         </a>
                     </li>
                 </ul>
