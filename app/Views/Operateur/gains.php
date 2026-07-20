@@ -37,6 +37,7 @@
             <tbody>
                 <?php foreach ($gains as $gain): ?>
                     <tr>
+                        <td><?= esc($gain['nom_client']) ?></td>
                         <td><?= esc($gain['id_operation']) ?></td>
                         <td><?= esc($gain['date_operation']) ?></td>
                         <td><?= esc($gain['type_operation']) ?></td>
