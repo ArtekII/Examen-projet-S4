@@ -14,8 +14,7 @@ class ClientsController extends BaseController
     {
         return view('Client/connexion', [
             'title' => 'Connexion'
-        ]
-        );
+        ]);
     }
 
     public function login()
@@ -133,6 +132,7 @@ class ClientsController extends BaseController
         $beneficiaires = [[
             'id' => $clientId,
             'meme_operateur' => true,
+            'operateur_id' => $operateurId,
         ]];
 
         if ($typeOperation['libelle'] === 'Transfert') {
