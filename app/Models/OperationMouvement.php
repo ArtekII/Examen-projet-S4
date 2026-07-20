@@ -156,6 +156,7 @@ class OperationMouvement extends Model
         bool $inclureFraisRetrait
     ): array {
         $configurationModel = new ConfigurationsTransaction();
+        $commissionModel = new ConfigurationsCommission();
         $estTransfert = $typeOperation['libelle'] === 'Transfert';
         $typeRetrait = null;
 
@@ -169,6 +170,7 @@ class OperationMouvement extends Model
 
         foreach ($beneficiaires as $index => $beneficiaire) {
             $fraisRetrait = 0.0;
+            $commission = 0.0;
 
             if ($typeRetrait && $beneficiaire['meme_operateur']) {
                 $fraisRetrait = $configurationModel->getFrais(
@@ -177,7 +179,21 @@ class OperationMouvement extends Model
                 );
             }
 
-            $montantOperation = $montants[$index] + $fraisRetrait;
+            if ($estTransfert
+                && ! $beneficiaire['meme_operateur']
+                && $beneficiaire['operateur_id'] !== null) {
+                $pourcentage = $commissionModel->getPourcentage(
+                    $beneficiaire['operateur_id']
+                );
+                $commission = round(
+                    $montants[$index] * $pourcentage / 100,
+                    2
+                );
+            }
+
+            $montantOperation = $montants[$index]
+                + $fraisRetrait
+                + $commission;
             $fraisOperation = $configurationModel->getFrais(
                 (int) $typeOperation['id'],
                 $montantOperation
@@ -195,7 +211,7 @@ class OperationMouvement extends Model
                 $totalADebiter += $montantOperation + $fraisOperation;
             }
 
-            $totalFrais += $fraisOperation + $fraisRetrait;
+            $totalFrais += $fraisOperation + $fraisRetrait + $commission;
         }
 
         return [

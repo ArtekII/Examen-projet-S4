@@ -162,6 +162,9 @@ class Clients extends Model
             $beneficiaires[] = [
                 'id' => (int) $client['id'],
                 'meme_operateur' => $memeOperateur,
+                'operateur_id' => $operateur
+                    ? (int) $operateur['id']
+                    : null,
             ];
         }
 
