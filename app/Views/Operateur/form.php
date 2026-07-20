@@ -69,6 +69,6 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-
+    <button><a href="/operateur/soldes">Soldes</a></button>
 </body>
 </html>

@@ -33,6 +33,6 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-
+                <button><a href="/operateur/gains">Gains</a></button>
 </body>
 </html>
