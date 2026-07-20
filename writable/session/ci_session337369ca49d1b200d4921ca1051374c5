@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1784550612;_ci_previous_url|s:38:"http://localhost:8080/client/connexion";client_id|i:4;nom_client|s:8:"Client D";operateur_id|i:2;_ci_old_input|a:2:{s:3:"get";a:0:{}s:4:"post";a:1:{s:6:"numero";s:10:"0342222222";}}__ci_vars|a:2:{s:13:"_ci_old_input";s:3:"old";s:5:"error";s:3:"old";}error|s:45:"Ce numero ne correspond pas a notre operateur";

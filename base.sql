@@ -10,9 +10,6 @@ CREATE TABLE type_operations(
     libelle VARCHAR(255) NOT NULL
 );
 
-1 = depot
-2 = retrait
-3 = transfert
 CREATE TABLE clients(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom_client VARCHAR(255) NOT NULL,

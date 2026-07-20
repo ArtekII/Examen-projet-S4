@@ -41,6 +41,17 @@
             <div><?= esc($validation['montant'] ?? '') ?></div>
         </div>
 
+        <div id="include-withdrawal-fees-group" class="form-group">
+            <label>
+                <input
+                    type="checkbox"
+                    name="inclure_frais_retrait"
+                    value="1"
+                >
+                Inclure les frais de retrait
+            </label>
+        </div>
+
         <div class="form-group" id="beneficiary-group" hidden>
             <label for="numero_beneficiaire">Numéro du bénéficiaire</label>
             <input

@@ -25,6 +25,9 @@ class ClientsController extends BaseController
         $clientModel = new Clients();
         $client = $clientModel->getClientByNumero($numero);
 
+        $config = config('MobileMoney');
+        $operatorIdSimule = $config->operatorId;
+
         if (! $client) {
             return redirect()->back()->withInput()
                 ->with('error', 'Numéro de téléphone incorrect.');
@@ -36,6 +39,11 @@ class ClientsController extends BaseController
         if (! $operateur) {
             return redirect()->back()->withInput()
                 ->with('error', 'Aucun opérateur ne correspond à ce numéro.');
+        }
+
+        if($operateur['id'] !== $operatorIdSimule) {
+            return redirect()->back()->withInput()
+                ->with('error', 'Ce numero ne correspond pas a notre operateur');
         }
 
         session()->set([
@@ -91,6 +99,9 @@ class ClientsController extends BaseController
             return redirect()->to(site_url('client/connexion'))
                 ->with('error', 'Veuillez vous reconnecter.');
         }
+
+        $config = config('MobileMoney');
+        $operatorIdSimule = $config->operatorId;
 
         $typeOperationId = (string) $this->request->getPost('id_type_operation');
 
