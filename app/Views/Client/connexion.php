@@ -3,9 +3,14 @@
 <?= $this->section('content') ?>
 <div class="container">
     <h1>Connexion</h1>
+    <?php if (session()->has('success')){ ?>
+        <div class="alert alert-success">
+            <?= esc(session('success')) ?>
+        </div>
+    <?php } ?>
     <?php if (session()->has('error')){ ?>
         <div class="alert alert-danger">
-            <?= session('error') ?>
+            <?= esc(session('error')) ?>
         </div>
     <?php } ?>
     <form action="<?= site_url('client/login') ?>" method="post">

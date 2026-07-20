@@ -4,17 +4,17 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class SoldeClients extends Model
+class Operateurs extends Model
 {
-    protected $table            = 'soldeclients';
+    protected $table            = 'operateurs';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id_client',
-        'solde'
+        'nom_operateur',
+        'prefixe',
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -24,28 +24,15 @@ class SoldeClients extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'date_creation';
+    protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [
-        'id_client' => 'required|exists:clients,id',
-        'solde' => 'required|numeric|min_value:0'
-    ];
-    protected $validationMessages   = [
-        'id_client' => [
-            'required' => 'L\'ID du client est requis.',
-            'exists' => 'Le client n\'existe pas.'
-        ],
-        'solde' => [
-            'required' => 'Le solde est requis.',
-            'numeric' => 'Le solde doit être un nombre.',
-            'min_value' => 'Le solde doit être un nombre positif.'
-        ]
-    ];
+    protected $validationRules      = [];
+    protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -60,8 +47,10 @@ class SoldeClients extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getSoldeByClientId($id_client)
+    public function getOperateurByNumero(string $numero): ?array
     {
-        return $this->where('id_client', $id_client)->orderby('date_creation', 'DESC')->first();
+        $prefixe = substr(trim($numero), 0, 3);
+
+        return $this->where('prefixe', $prefixe)->first();
     }
 }
