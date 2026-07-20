@@ -78,13 +78,17 @@ class ConfigurationTransactionController extends BaseController
     public function commissions()
     {
         $model = new CommissionsParOperateurModel();
-
-        return view('Operateur/commissions', [
-            'commissions' => $model
+        $commissions = $model
             ->where('id_operateur !=', (int) config('MobileMoney')->operatorId)
             ->orderBy('total_commission', 'DESC')
-            ->findAll(),
-            
+            ->findAll();
+
+        return view('Operateur/commissions', [
+            'title' => 'Commissions perçues',
+            'commissions' => $commissions,
+            'totalCommissions' => array_sum(
+                array_column($commissions, 'total_commission')
+            ),
         ]);
     }
 }

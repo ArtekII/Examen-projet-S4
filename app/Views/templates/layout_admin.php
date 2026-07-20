@@ -6,10 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($title ?? 'Administration') ?></title>
     <link rel="stylesheet" href="<?= base_url('css/admin.css') ?>">
+    <?= $this->renderSection('styles') ?>
 </head>
 
 <body>
-    <?php $currentPath = trim(service('uri')->getPath(), '/'); ?>
+    <?php
+    $currentPath = trim(service('uri')->getPath(), '/');
+    $commissionConfigActive = $currentPath === 'operateur/commission'
+        || str_starts_with($currentPath, 'operateur/commission/');
+    ?>
 
     <div class="admin-layout">
         <aside class="sidebar">
@@ -26,9 +31,9 @@
                         </a>
                     </li>
                     <li>
-                        <a class="sidebar__link <?= str_starts_with($currentPath, 'operateur/commission') ? 'sidebar__link--active' : '' ?>"
+                        <a class="sidebar__link <?= $commissionConfigActive ? 'sidebar__link--active' : '' ?>"
                            href="<?= site_url('operateur/commission') ?>"
-                           <?= str_starts_with($currentPath, 'operateur/commission') ? 'aria-current="page"' : '' ?>>
+                           <?= $commissionConfigActive ? 'aria-current="page"' : '' ?>>
                             Configuration des commissions
                         </a>
                     </li>
