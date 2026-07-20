@@ -8,6 +8,7 @@ use App\Models\Clients;
 use App\Models\OperationMouvement;
 use App\Models\TypeOperations;
 use App\Models\Operateurs;
+use App\Models\ConfigurationsTransaction;
 
 class ClientsController extends BaseController
 {
@@ -108,6 +109,18 @@ class ClientsController extends BaseController
             ]);
         }
 
+        $montantSaisi = $this->request->getPost('montant');
+
+        if (! is_numeric($montantSaisi) || (float) $montantSaisi <= 0) {
+            return redirect()->back()->withInput()->with('validation', [
+                'montant' => 'Le montant doit être un nombre supérieur à zéro.',
+            ]);
+        }
+
+        $montant = (float) $montantSaisi;
+        $configurationModel = new ConfigurationsTransaction();
+        $frais = $configurationModel->getFrais((int) $typeOperation['id'], $montant);
+
         $clientId = (int) session()->get('client_id');
         $beneficiaireId = $clientId;
 
@@ -134,12 +147,25 @@ class ClientsController extends BaseController
         }
 
         $operationMouvement = new OperationMouvement();
+
+        if (in_array($typeOperation['libelle'], ['Retrait', 'Transfert'], true)) {
+            $solde = $operationMouvement->getSoldeByClientId($clientId);
+            $totalADebiter = $montant + $frais;
+
+            if ($totalADebiter > $solde) {
+                return redirect()->back()->withInput()->with('validation', [
+                    'montant' => 'Solde insuffisant : le montant avec frais est de '
+                        . number_format($totalADebiter, 2, ',', ' ') . ' Ar.',
+                ]);
+            }
+        }
+
         $data = [
             'id_emetteur' => $clientId,
             'id_beneficiaire' => $beneficiaireId,
             'id_operateur' => (int) session()->get('operateur_id'),
             'id_type_operation' => (int) $typeOperation['id'],
-            'montant' => $this->request->getPost('montant'),
+            'montant' => $montant,
         ];
 
         if (! $operationMouvement->insert($data)) {
@@ -147,8 +173,11 @@ class ClientsController extends BaseController
                 ->with('validation', $operationMouvement->errors());
         }
 
-        return redirect()->to(site_url('client/compte'))
-            ->with('success', 'Opération enregistrée avec succès.');
+        return redirect()->to(site_url('client/compte'))->with(
+            'success',
+            'Opération enregistrée. Frais appliqués : '
+                . number_format($frais, 2, ',', ' ') . ' Ar.'
+        );
     }
 
     public function historique()

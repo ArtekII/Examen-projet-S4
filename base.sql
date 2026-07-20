@@ -56,19 +56,32 @@ INSERT INTO type_operations (libelle) VALUES ('Retrait');
 INSERT INTO type_operations (libelle) VALUES ('Transfert');
 
 CREATE VIEW "v_get_solde_client" AS
+WITH mouvements_avec_frais AS (
+    SELECT
+        om.*,
+        COALESCE((
+            SELECT ct.montant_frais
+            FROM configurations_transaction ct
+            WHERE ct.id_type_operation = om.id_type_operation
+              AND om.montant BETWEEN ct.borne_min AND ct.borne_max
+            ORDER BY ct.id ASC
+            LIMIT 1
+        ), 0) AS montant_frais
+    FROM operation_mouvement om
+)
 SELECT
     c.id,
     c.nom_client,
     COALESCE(SUM(
         CASE 
-            WHEN om.id_type_operation = 1 THEN om.montant
-            WHEN om.id_type_operation = 2 THEN -om.montant
+            WHEN om.id_type_operation = 1 THEN om.montant - om.montant_frais
+            WHEN om.id_type_operation = 2 THEN -(om.montant + om.montant_frais)
             WHEN om.id_type_operation = 3 AND om.id_beneficiaire = c.id THEN om.montant
-            WHEN om.id_type_operation = 3 AND om.id_emetteur = c.id THEN -om.montant
+            WHEN om.id_type_operation = 3 AND om.id_emetteur = c.id THEN -(om.montant + om.montant_frais)
         END
     ), 0) AS SOLDE
 FROM clients c
-LEFT JOIN operation_mouvement om 
+LEFT JOIN mouvements_avec_frais om
     ON c.id = om.id_emetteur OR c.id = om.id_beneficiaire
 GROUP BY c.id, c.nom_client;
 
@@ -93,6 +106,7 @@ FROM
 JOIN clients c1 ON om.id_emetteur = c1.id
 LEFT JOIN clients c2 ON om.id_beneficiaire = c2.id
 JOIN type_operations o ON om.id_type_operation = o.id;
+
 CREATE VIEW v_gains_frais AS
 SELECT
     om.id AS id_operation,
@@ -118,5 +132,3 @@ FROM v_gains_frais;
 
 -- En cas de delete aza adino manao anity commande ity sinon tsy mifanaraka le id
 DELETE FROM sqlite_sequence WHERE name IN ('clients', 'operateurs', 'type_operations', 'operation_mouvement');
-
-

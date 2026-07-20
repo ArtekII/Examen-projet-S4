@@ -81,4 +81,16 @@ class ConfigurationsTransaction extends Model
     protected $afterFind = [];
     protected $beforeDelete = [];
     protected $afterDelete = [];
+
+    public function getFrais(int $typeOperationId, float $montant): float
+    {
+        $configuration = $this
+            ->where('id_type_operation', $typeOperationId)
+            ->where('borne_min <=', $montant)
+            ->where('borne_max >=', $montant)
+            ->orderBy('id', 'ASC')
+            ->first();
+
+        return (float) ($configuration['montant_frais'] ?? 0);
+    }
 }
