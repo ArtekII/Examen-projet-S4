@@ -46,4 +46,9 @@ class TypeOperations extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getByLibelle(string $libelle): ?array
+    {
+        return $this->where('libelle', $libelle)->first();
+    }
 }

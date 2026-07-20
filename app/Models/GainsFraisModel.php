@@ -10,4 +10,13 @@ class GainsFraisModel extends Model
     protected $primaryKey = 'id_operation';
     protected $returnType = 'array';
     protected $useTimestamps = false;
+
+    public function getByType(?int $typeOperationId): array
+    {
+        if ($typeOperationId === null) {
+            return $this->findAll();
+        }
+
+        return $this->where('id_type_operation', $typeOperationId)->findAll();
+    }
 }
