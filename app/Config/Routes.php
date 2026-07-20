@@ -16,3 +16,10 @@ $routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) 
     $routes->get('historique', 'ClientsController::historique');
     $routes->post('deconnexion', 'ClientsController::deconnexion');
 });
+// Operateur
+$routes->group('operateur', function ($routes) {
+    $routes->get('/', 'ConfigurationTransactionController::index');
+    $routes->post('store', 'ConfigurationTransactionController::store');
+    $routes->get('soldes', 'ConfigurationTransactionController::soldes');
+    $routes->get('gains', 'ConfigurationTransactionController::gains');
+});

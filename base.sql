@@ -10,6 +10,9 @@ CREATE TABLE type_operations(
     libelle VARCHAR(255) NOT NULL
 );
 
+1 = depot
+2 = retrait
+3 = transfert
 CREATE TABLE clients(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom_client VARCHAR(255) NOT NULL,
@@ -52,9 +55,6 @@ INSERT INTO type_operations (libelle) VALUES ('Depot');
 INSERT INTO type_operations (libelle) VALUES ('Retrait');
 INSERT INTO type_operations (libelle) VALUES ('Transfert');
 
-INSERT INTO clients (nom_client, numero) VALUES ('Client A', '0380000000');
-INSERT INTO clients (nom_client, numero) VALUES ('Client B', '0370000000');
-
 CREATE VIEW "v_get_solde_client" AS
 SELECT
     c.id,
@@ -93,4 +93,30 @@ FROM
 JOIN clients c1 ON om.id_emetteur = c1.id
 LEFT JOIN clients c2 ON om.id_beneficiaire = c2.id
 JOIN type_operations o ON om.id_type_operation = o.id;
+CREATE VIEW v_gains_frais AS
+SELECT
+    om.id AS id_operation,
+    om.date_operation,
+    om.id_type_operation,
+    t.libelle AS type_operation,
+    om.montant,
+    ct.montant_frais
+FROM operation_mouvement om
+JOIN type_operations t 
+    ON t.id = om.id_type_operation
+LEFT JOIN configurations_transaction ct
+    ON ct.id_type_operation = om.id_type_operation
+    AND om.montant BETWEEN ct.borne_min AND ct.borne_max
+ORDER BY om.date_operation;
+
+CREATE VIEW v_total_gains_frais AS
+SELECT
+    COALESCE(SUM(montant_frais), 0) AS total_gains
+FROM v_gains_frais;
+
+
+
+-- En cas de delete aza adino manao anity commande ity sinon tsy mifanaraka le id
+DELETE FROM sqlite_sequence WHERE name IN ('clients', 'operateurs', 'type_operations', 'operation_mouvement');
+
 
