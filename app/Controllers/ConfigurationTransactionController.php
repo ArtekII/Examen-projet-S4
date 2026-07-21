@@ -87,4 +87,39 @@ class ConfigurationTransactionController extends BaseController
             
         ]);
     }
+
+    public function soldesExportCsv()
+{
+    $model = new SoldeClientModel();
+    $soldes = $model->getAllOrderedByName();
+
+    // Prépare les en-têtes HTTP pour forcer le téléchargement
+    $filename = 'soldes_clients_' . date('Y-m-d') . '.csv';
+
+    $response = $this->response;
+    $response->setHeader('Content-Type', 'text/csv; charset=UTF-8');
+    $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+    // Ouvre un flux en mémoire (php://output écrit directement dans la réponse)
+    $handle = fopen('php://output', 'w');
+
+    // BOM UTF-8 pour qu'Excel affiche correctement les accents
+    fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+    // Ligne d'en-tête du CSV
+    fputcsv($handle, ['id', 'nom_client', 'solde'], ';');
+
+    // Une ligne par client
+    foreach ($soldes as $solde) {
+        fputcsv($handle, [ 
+            $solde['id'],
+            $solde['nom_client'],
+            $solde['SOLDE'],
+        ], ';');
+    }
+
+    fclose($handle);
+
+    return $response;
+}
 }

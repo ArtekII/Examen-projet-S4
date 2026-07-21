@@ -13,6 +13,7 @@ $routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) 
     $routes->get('compte', 'ClientsController::solde');
     $routes->get('operation', 'ClientsController::operation');
     $routes->post('operation', 'ClientsController::store');
+
     $routes->get('historique', 'ClientsController::historique');
     $routes->post('deconnexion', 'ClientsController::deconnexion');
 });
@@ -24,4 +25,5 @@ $routes->group('operateur', function ($routes) {
     $routes->get('gains', 'ConfigurationTransactionController::gains');
     $routes->get('prefixe', 'OperateursController::index');
     $routes->get('commissions', 'ConfigurationTransactionController::commissions');
+    $routes->get('soldes/export-csv', 'ConfigurationTransactionController::soldesExportCsv');
 });

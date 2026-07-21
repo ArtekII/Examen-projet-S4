@@ -27,5 +27,8 @@
             </tbody>
         </table>
     </div>
+    <a href="<?= site_url('operateur/soldes/export-csv') ?>" target="_blank" class="btn">
+        Exporter en CSV
+    </a>
 </div>
 <?= $this->endSection() ?>
