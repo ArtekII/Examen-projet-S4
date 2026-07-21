@@ -135,7 +135,7 @@ class ClientsController extends BaseController
             'operateur_id' => $operateurId,
         ]];
 
-        if ($typeOperation['libelle'] === 'Transfert') {
+        if ($typeOperation['id'] === 3) {
             if ($envoiMultiple) {
                 $texteNumeros = (string) $this->request
                     ->getPost('numeros_beneficiaires');
