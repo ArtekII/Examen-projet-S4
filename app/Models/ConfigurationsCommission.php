@@ -9,6 +9,7 @@ class ConfigurationsCommission extends Model
     protected $table = 'configurations_commission';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
+
     protected $allowedFields = ['id_operateur', 'pourcentage_commission'];
     protected $useTimestamps = false;
 

@@ -156,7 +156,7 @@ JOIN type_operations o ON om.id_type_operation = o.id;
 
 -- CREATE VIEW v_gains_frais AS
 -- SELECT
---     om.id AS id_operation,
+--     om.id AStype_operations id_operation,
 --     om.date_operation,
 --     om.id_type_operation,
 --     t.libelle AS type_operation,
@@ -221,3 +221,5 @@ FROM configurations_commission cc
 JOIN operateurs o ON o.id = cc.id_operateur;
 -- En cas de delete aza adino manao anity commande ity sinon tsy mifanaraka le id
 DELETE FROM sqlite_sequence WHERE name IN ('clients', 'operateurs', 'type_operations', 'operation_mouvement');
+
+
