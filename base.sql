@@ -225,3 +225,10 @@ JOIN operateurs o ON o.id = cc.id_operateur;
 DELETE FROM sqlite_sequence WHERE name IN ('clients', 'operateurs', 'type_operations', 'operation_mouvement');
 
 
+
+CREATE table promotion(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pourcetange_promotion DECIMAl (10,2) DEFAULT 0.00
+);
+
+INSERT INTO promotion (pourcetange_promotion) VALUES (10.00);

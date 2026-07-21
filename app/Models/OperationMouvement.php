@@ -157,6 +157,7 @@ class OperationMouvement extends Model
     ): array {
         $configurationModel = new ConfigurationsTransaction();
         $commissionModel = new ConfigurationsCommission();
+        $promotion = new Promotion();
         $estTransfert = $typeOperation['libelle'] === 'Transfert';
         $typeRetrait = null;
 
@@ -196,11 +197,30 @@ class OperationMouvement extends Model
                 );
             }
 
-            // Frais habituels calculés sur le montant pur (pas gonflé)
-            $fraisOperation = $configurationModel->getFrais(
-                (int) $typeOperation['id'],
-                $montantPur
-            );
+            if (
+                $beneficiaire['meme_operateur']
+            ) {
+                $promot = $promotion->getPourcetangeReduction();
+                $reduc = $promot['pourcetange_promotion'];
+
+                $promotB = true;
+            }
+
+            if ($promotB) {
+                $fraisOperationTemp = $configurationModel->getFrais(
+                    (int) $typeOperation['id'],
+                    $montantPur
+                );
+                $fraisOperation = $fraisOperationTemp - ($fraisOperationTemp * ($reduc / 100));
+                
+            } else {
+                // Frais habituels calculés sur le montant pur (pas gonflé)
+                $fraisOperation = $configurationModel->getFrais(
+                    (int) $typeOperation['id'],
+                    $montantPur
+                );
+            }
+            
 
             // Le bénéficiaire reçoit TOUJOURS le montant pur
             $operations[] = [
