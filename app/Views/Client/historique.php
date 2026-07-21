@@ -4,6 +4,15 @@
 <div class="container">
     <div class="page-header">
         <h1>Historique des opérations</h1>
+        <div class="page-header">
+
+        <a
+            class="button"
+            href="<?= site_url('client/historique/pdf') ?>"
+        >
+            Exporter en PDF
+        </a>
+</div>
     </div>
 
     <?php if (session()->has('success')){ ?>
