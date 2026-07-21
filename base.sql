@@ -219,6 +219,8 @@ SELECT
     cc.pourcentage_commission
 FROM configurations_commission cc
 JOIN operateurs o ON o.id = cc.id_operateur;
+
+
 -- En cas de delete aza adino manao anity commande ity sinon tsy mifanaraka le id
 DELETE FROM sqlite_sequence WHERE name IN ('clients', 'operateurs', 'type_operations', 'operation_mouvement');
 

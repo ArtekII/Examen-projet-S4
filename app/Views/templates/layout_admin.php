@@ -25,6 +25,12 @@
             <nav aria-label="Navigation administrateur">
                 <ul class="sidebar__links">
                     <li>
+                        <a class="sidebar__link <?= $currentPath === 'client/compte' ? 'sidebar__link--active' : '' ?>"
+                            href="<?= site_url('client/compte') ?>" <?= $currentPath === 'client/compte' ? 'aria-current="page"' : '' ?>>
+                            Espace client
+                        </a>
+                    </li>
+                    <li>
                         <a class="sidebar__link <?= $currentPath === 'operateur' ? 'sidebar__link--active' : '' ?>"
                             href="<?= site_url('operateur') ?>" <?= $currentPath === 'operateur' ? 'aria-current="page"' : '' ?>>
                             Configuration des frais
