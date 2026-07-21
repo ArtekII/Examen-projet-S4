@@ -15,6 +15,7 @@ $routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) 
     $routes->post('operation', 'ClientsController::store');
     $routes->get('historique', 'ClientsController::historique');
     $routes->post('deconnexion', 'ClientsController::deconnexion');
+    $routes->get('historique/pdf', 'ClientsController::exporterHistoriquePdf');
 });
 // Operateur
 $routes->group('operateur', function ($routes) {

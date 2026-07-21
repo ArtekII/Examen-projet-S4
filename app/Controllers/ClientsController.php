@@ -256,4 +256,153 @@ class ClientsController extends BaseController
             $field => $message,
         ]);
     }
+
+    public function exporterHistoriquePdf()
+    {
+        if (! session()->has('client_id')) {
+            return redirect()->to(site_url('client/connexion'));
+        }
+
+        require_once APPPATH . 'ThirdParty/fpdf.php';
+
+        $clientId = (int) session()->get('client_id');
+        $historique = (new OperationMouvement())
+            ->getHistoriqueByClientId($clientId);
+
+        // FPDF standard ne gère pas directement l’UTF-8.
+        $encode = static function ($texte): string {
+            $texteConverti = iconv(
+                'UTF-8',
+                'windows-1252//TRANSLIT',
+                (string) $texte
+            );
+
+            return $texteConverti !== false ? $texteConverti : (string) $texte;
+        };
+
+        $pdf = new \FPDF('L', 'mm', 'A4');
+        $pdf->SetTitle($encode('Historique des opérations'));
+        $pdf->SetAuthor($encode((string) session()->get('nom_client')));
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(true, 15);
+        $pdf->AddPage();
+
+        // Titre
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(
+            0,
+            10,
+            $encode('Historique des opérations'),
+            0,
+            1,
+            'C'
+        );
+
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->Cell(
+            0,
+            8,
+            $encode('Client : ' . session()->get('nom_client')),
+            0,
+            1
+        );
+
+        $pdf->Ln(4);
+
+        if (empty($historique)) {
+            $pdf->SetFont('Arial', 'I', 11);
+            $pdf->Cell(
+                0,
+                10,
+                $encode('Aucune opération enregistrée.'),
+                0,
+                1,
+                'C'
+            );
+        } else {
+            // En-tête du tableau
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetFillColor(230, 230, 230);
+
+            $pdf->Cell(43, 9, 'Date', 1, 0, 'C', true);
+            $pdf->Cell(38, 9, $encode('Opération'), 1, 0, 'C', true);
+            $pdf->Cell(28, 9, 'Sens', 1, 0, 'C', true);
+            $pdf->Cell(90, 9, 'Correspondant', 1, 0, 'C', true);
+            $pdf->Cell(48, 9, 'Montant', 1, 1, 'C', true);
+
+            // Contenu
+            $pdf->SetFont('Arial', '', 9);
+
+            foreach ($historique as $operation) {
+                $estRecu = $operation['sens'] === 'Recu';
+                $correspondant = '-';
+
+                if ($operation['type_operation'] === 'Transfert') {
+                    $correspondant = $estRecu
+                        ? ($operation['emetteur'] ?? '-')
+                        : ($operation['beneficiaire'] ?? '-');
+                }
+
+                $sens = $estRecu ? 'Reçu' : 'Envoyé';
+
+                $montant = ($estRecu ? '+' : '-')
+                    . number_format(
+                        (float) $operation['montant'],
+                        2,
+                        ',',
+                        ' '
+                    )
+                    . ' Ar';
+
+                $pdf->Cell(
+                    43,
+                    8,
+                    $encode($operation['date_operation']),
+                    1
+                );
+
+                $pdf->Cell(
+                    38,
+                    8,
+                    $encode($operation['type_operation']),
+                    1
+                );
+
+                $pdf->Cell(
+                    28,
+                    8,
+                    $encode($sens),
+                    1,
+                    0,
+                    'C'
+                );
+
+                $pdf->Cell(
+                    90,
+                    8,
+                    $encode($correspondant),
+                    1
+                );
+
+                $pdf->Cell(
+                    48,
+                    8,
+                    $encode($montant),
+                    1,
+                    1,
+                    'R'
+                );
+            }
+        }
+
+        $contenuPdf = $pdf->Output('S');
+
+        return $this->response
+            ->setHeader('Content-Type', 'application/pdf')
+            ->setHeader(
+                'Content-Disposition',
+                'attachment; filename="historique_operations.pdf"'
+            )
+            ->setBody($contenuPdf);
+    }
 }
