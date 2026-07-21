@@ -232,3 +232,11 @@ CREATE table promotion(
 );
 
 INSERT INTO promotion (pourcetange_promotion) VALUES (10.00);
+
+CREATE TABLE epargne_client(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_client INTEGER NOT NULL,
+    ipourcentage_epargne DECIMAl (10,2) DEFAULT 0.00,
+    montant_epargne DECIMAl (10,2) DEFAULT 0.00,
+    FOREIGN KEY (id_client) REFERENCES clients(id)
+);

@@ -7,6 +7,9 @@ use App\Models\Clients;
 use App\Models\OperationMouvement;
 use App\Models\TypeOperations;
 use App\Models\Operateurs;
+use App\Models\Epargne;
+use App\Models\EpargneClient;
+
 
 class ClientsController extends BaseController
 {
@@ -240,6 +243,37 @@ class ClientsController extends BaseController
             'title' => 'Historique',
             'historique' => $historique
         ]);
+    }
+
+    public function choix() {
+        if (! session()->has('client_id')) {
+            return redirect()->to(site_url('client/connexion'));
+        }
+
+
+        $operateurSimule = (new Operateurs())->find(
+            (int) config('MobileMoney')->operatorId
+        );
+
+        return view('Client/epargne', [
+            'title' => 'Choix epargne',
+            'prefixeOperateurSimule' => $operateurSimule['prefixe'] ?? '',
+        ]);
+    }
+
+    public function epargne() {
+        $epargneClientModel = new EpargneClient();
+        if (! session()->has('client_id')) {
+            return redirect()->to(site_url('client/connexion'));
+        }
+
+        $clientId = (int) session()->get('client_id');
+
+        $pourcentage = $this->request->getPost('pourcentage');
+
+        $epargneClientModel->updatePourcentage($clientId, )
+        return redirect()->to('/client');
+    
     }
 
     public function deconnexion()

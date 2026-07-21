@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Clients;
 use CodeIgniter\Router\RouteCollection;
 
 /**
@@ -13,6 +14,9 @@ $routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) 
     $routes->get('compte', 'ClientsController::solde');
     $routes->get('operation', 'ClientsController::operation');
     $routes->post('operation', 'ClientsController::store');
+
+    $routes->get('choix', 'ClientsController::choix');
+    $routes->get('epargne', 'ClientsController::epargne');
 
     $routes->get('historique', 'ClientsController::historique');
     $routes->post('deconnexion', 'ClientsController::deconnexion');

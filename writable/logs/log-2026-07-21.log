@@ -10,3 +10,33 @@ in APPPATH/Models/OperationMouvement.php on line 204.
  7 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
  8 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
  9 SYSTEMPATH/rewrite.php(44): require_once('/home/lavi/Documents/web/Exam-final/Examen-projet-S4/public/index.php')
+CRITICAL - 2026-07-21 10:53:13 --> ErrorException: Undefined variable $typeOperations
+[Method: GET, Route: client/choix]
+in APPPATH/Views/Client/operation.php on line 27.
+ 1 APPPATH/Views/Client/operation.php(27): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/lavi/Documents/web/Exam-final/Examen-projet-S4/app/Views/Client/operation.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/ClientsController.php(255): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ClientsController->choix()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/lavi/Documents/web/Exam-final/Examen-projet-S4/public/index.php')
+CRITICAL - 2026-07-21 10:54:14 --> ErrorException: Undefined variable $typeOperations
+[Method: GET, Route: client/choix]
+in APPPATH/Views/Client/operation.php on line 27.
+ 1 APPPATH/Views/Client/operation.php(27): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/lavi/Documents/web/Exam-final/Examen-projet-S4/app/Views/Client/operation.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/ClientsController.php(255): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\ClientsController->choix()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/lavi/Documents/web/Exam-final/Examen-projet-S4/public/index.php')
